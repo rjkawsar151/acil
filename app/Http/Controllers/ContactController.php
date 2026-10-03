@@ -2,12 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\ProductInquiryAlert;
+use App\Models\Category;
 use App\Models\ContactMessage;
 use App\Models\Product;
 use App\Models\ProductInquiry;
 use App\Models\SeoSetting;
 use App\Models\Setting;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\RateLimiter;
 
 class ContactController extends Controller
@@ -27,6 +31,34 @@ class ContactController extends Controller
         $seo = SeoSetting::getForPage('contact');
 
         return view('frontend.contact', compact('settings', 'seo'));
+    }
+
+    public function inquiryPage(Request $request)
+    {
+        $selectedProduct = null;
+        if ($request->filled('product')) {
+            $selectedProduct = Product::where('slug', $request->query('product'))->first();
+        } elseif ($request->filled('product_id')) {
+            $selectedProduct = Product::find($request->query('product_id'));
+        }
+
+        $categories = Category::with(['activeProducts' => function ($q) {
+            $q->orderBy('name', 'asc');
+        }])->active()->orderBy('sort_order', 'asc')->get();
+
+        $settings = [
+            'factory_location' => Setting::get('factory_location', 'Genda, Savar, Dhaka, Bangladesh'),
+            'corporate_office' => Setting::get('corporate_office', 'Adonis Tower, Uttara, Dhaka, Bangladesh'),
+            'contact_email' => Setting::get('contact_email', 'info@adonischemical.com'),
+            'sales_email' => Setting::get('sales_email', 'sales@adonischemical.com'),
+            'contact_phone' => Setting::get('contact_phone', '+880 1810-000000'),
+            'hotline_phone' => Setting::get('hotline_phone', '+880 9612-000000'),
+            'working_hours' => Setting::get('working_hours', 'Sunday – Thursday: 9:00 AM – 6:00 PM'),
+        ];
+
+        $seo = SeoSetting::getForPage('inquiry');
+
+        return view('frontend.inquiry', compact('selectedProduct', 'categories', 'settings', 'seo'));
     }
 
     public function submitContact(Request $request)
@@ -108,7 +140,23 @@ class ContactController extends Controller
         $validated['quantity_requirement'] = !empty($validated['quantity_requirement']) ? trim($validated['quantity_requirement']) : null;
         $validated['ip_address'] = $ip;
 
-        ProductInquiry::create($validated);
+        $inquiry = ProductInquiry::create($validated);
+
+        // Send alert emails to configured recipients from .env (e.g. mail1@mail.com,mail2@mail.com)
+        $alertEmailsConfig = env('INQUIRY_ALERT_EMAILS', config('mail.inquiry_alert_emails'));
+        if ($alertEmailsConfig) {
+            $recipients = array_filter(array_map('trim', explode(',', (string)$alertEmailsConfig)));
+            if (!empty($recipients)) {
+                try {
+                    Mail::to($recipients)->send(new ProductInquiryAlert($inquiry));
+                } catch (\Throwable $e) {
+                    Log::error('Failed to send Product Inquiry alert email: ' . $e->getMessage(), [
+                        'inquiry_id' => $inquiry->id,
+                        'recipients' => $recipients
+                    ]);
+                }
+            }
+        }
 
         return back()->with('success', 'Your product requirement has been submitted. Our commercial division will reach out with technical details and quotation.');
     }

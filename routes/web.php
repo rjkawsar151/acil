@@ -54,6 +54,7 @@ Route::get('/news/{slug}', [BlogController::class, 'show'])->name('news.show');
 Route::get('/news/category/{slug}', [BlogController::class, 'category'])->name('news.category');
 Route::get('/contact', [ContactController::class, 'index'])->name('contact');
 Route::post('/contact', [ContactController::class, 'submitContact'])->name('contact.submit');
+Route::get('/inquiry', [ContactController::class, 'inquiryPage'])->name('inquiry.index');
 Route::post('/inquiry', [ContactController::class, 'submitInquiry'])->name('inquiry.submit');
 Route::get('/search', [SearchController::class, 'index'])->name('search');
 

@@ -115,4 +115,12 @@ return [
         'name' => env('MAIL_FROM_NAME', env('APP_NAME', 'Laravel')),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Inquiry Alert Notification Recipients
+    |--------------------------------------------------------------------------
+    | Comma-separated list of emails that receive new inquiry notifications.
+    */
+    'inquiry_alert_emails' => env('INQUIRY_ALERT_EMAILS', 'info@acil.com.bd'),
+
 ];

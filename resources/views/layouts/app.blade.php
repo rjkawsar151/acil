@@ -469,6 +469,7 @@
                     <h4 class="font-heading font-bold text-white text-sm uppercase tracking-wider mb-4 border-l-2 border-brand-scientific pl-2.5">Products</h4>
                     <ul class="space-y-2.5 text-sm">
                         <li><a href="{{ route('catalogue') }}" class="text-blue-400 font-semibold hover:underline flex items-center gap-1.5"><i class="fa-solid fa-file-pdf text-red-500 text-xs"></i> Products Catalogue</a></li>
+                        <li><a href="{{ route('inquiry.index') }}" class="text-cyan-400 font-semibold hover:underline">Commercial Inquiry & Quotes</a></li>
                         <li><a href="{{ route('sinoda') }}" class="text-brand-cyan font-semibold hover:underline">SINODA Brand Portfolio</a></li>
                         <li><a href="{{ route('categories.show', 'hair-care') }}" class="hover:text-brand-cyan transition">Hair Care & Shampoos</a></li>
                         <li><a href="{{ route('categories.show', 'skin-care') }}" class="hover:text-brand-cyan transition">Skin & Aloe Vera Gels</a></li>
