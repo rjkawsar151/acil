@@ -56,6 +56,9 @@ class ContactController extends Controller
             'message' => 'required|string|min:10|max:3000',
         ]);
 
+        $validated['company'] = !empty($validated['company']) ? trim($validated['company']) : null;
+        $validated['phone'] = !empty($validated['phone']) ? trim($validated['phone']) : null;
+        $validated['subject'] = !empty($validated['subject']) ? trim($validated['subject']) : null;
         $validated['ip_address'] = $ip;
         ContactMessage::create($validated);
 
@@ -79,7 +82,7 @@ class ContactController extends Controller
         RateLimiter::hit($key, 60);
 
         $validated = $request->validate([
-            'product_id' => 'nullable|exists:products,id',
+            'product_id' => 'nullable',
             'product_name' => 'nullable|string|max:200',
             'name' => 'required|string|max:100',
             'company' => 'nullable|string|max:150',
@@ -89,14 +92,22 @@ class ContactController extends Controller
             'message' => 'required|string|min:10|max:3000',
         ]);
 
-        if (!empty($validated['product_id']) && empty($validated['product_name'])) {
-            $product = Product::find($validated['product_id']);
+        $productId = !empty($validated['product_id']) && is_numeric($validated['product_id']) ? (int)$validated['product_id'] : null;
+        $productName = !empty($validated['product_name']) ? trim($validated['product_name']) : null;
+
+        if ($productId && empty($productName)) {
+            $product = Product::find($productId);
             if ($product) {
-                $validated['product_name'] = $product->name;
+                $productName = $product->name;
             }
         }
 
+        $validated['product_id'] = $productId;
+        $validated['product_name'] = $productName;
+        $validated['company'] = !empty($validated['company']) ? trim($validated['company']) : null;
+        $validated['quantity_requirement'] = !empty($validated['quantity_requirement']) ? trim($validated['quantity_requirement']) : null;
         $validated['ip_address'] = $ip;
+
         ProductInquiry::create($validated);
 
         return back()->with('success', 'Your product requirement has been submitted. Our commercial division will reach out with technical details and quotation.');

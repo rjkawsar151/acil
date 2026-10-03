@@ -109,6 +109,21 @@
         </div>
     @endif
 
+    @if($errors->any())
+        <div class="toast-alert fixed bottom-6 right-6 z-50 bg-rose-600 text-white px-6 py-4 rounded-xl shadow-2xl flex items-center gap-3 border border-rose-400 transition-all duration-300">
+            <i class="fa-solid fa-triangle-exclamation text-xl"></i>
+            <div>
+                <p class="font-bold text-sm">Please check the form:</p>
+                <ul class="text-xs list-disc list-inside opacity-95">
+                    @foreach($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+            <button onclick="this.parentElement.remove()" class="ml-4 opacity-70 hover:opacity-100"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+    @endif
+
     <!-- Top Corporate Notification & Contact Bar -->
     <div class="bg-[#07172A] text-slate-300 text-xs py-2 px-4 border-b border-slate-800 hidden md:block">
         <div class="max-w-7xl mx-auto flex justify-between items-center">
