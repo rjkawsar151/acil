@@ -1,0 +1,285 @@
+/* ==========================================================================
+   ADONIS CHEMICAL LIMITED - CORPORATE CHEMICAL & COSMETIC INDUSTRY STYLESHEET
+   Clean, Authoritative, Standard Bangladeshi Industrial Architecture
+   ========================================================================== */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+    --color-navy: #0A2540;
+    --color-navy-dark: #07172A;
+    --color-blue-primary: #0B5ED7;
+    --color-blue-hover: #084298;
+    --color-blue-light: #EBF3FC;
+    --color-cyan: #0088A8;
+    --color-gray-bg: #F8FAFC;
+    --color-dark-text: #1E293B;
+    --color-muted-text: #64748B;
+    --color-border: #E2E8F0;
+    --shadow-sm: 0 1px 3px rgba(10, 37, 64, 0.06);
+    --shadow-md: 0 4px 12px rgba(10, 37, 64, 0.08);
+    --shadow-lg: 0 10px 25px rgba(10, 37, 64, 0.10);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    color: var(--color-dark-text);
+    background-color: #FFFFFF;
+    line-height: 1.6;
+    overflow-x: hidden;
+}
+
+h1, h2, h3, h4, h5, h6, .font-heading {
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-weight: 700;
+    color: var(--color-navy);
+    line-height: 1.25;
+}
+
+/* Background Utility Classes */
+.bg-corporate-navy {
+    background-color: var(--color-navy);
+}
+
+.bg-corporate-light {
+    background-color: var(--color-gray-bg);
+}
+
+.bg-corporate-blue {
+    background-color: var(--color-blue-primary);
+}
+
+/* Subtle Industrial Dot Pattern */
+.bg-industrial-pattern {
+    background-image: radial-gradient(rgba(11, 94, 215, 0.07) 1px, transparent 1px);
+    background-size: 20px 20px;
+}
+
+/* Clean Corporate Header */
+.site-header {
+    background-color: #FFFFFF;
+    border-bottom: 1px solid var(--color-border);
+    box-shadow: 0 2px 8px rgba(10, 37, 64, 0.04);
+}
+
+.site-header .nav-link {
+    color: var(--color-navy);
+    font-weight: 600;
+    font-size: 0.875rem;
+    transition: color 0.2s ease;
+}
+
+.site-header .nav-link:hover,
+.site-header .nav-link.active {
+    color: var(--color-blue-primary);
+}
+
+/* Clean Corporate Buttons */
+.btn-corporate-primary {
+    background-color: var(--color-blue-primary);
+    color: #FFFFFF;
+    font-weight: 600;
+    font-size: 0.875rem;
+    padding: 0.75rem 1.6rem;
+    border-radius: 0.5rem;
+    border: 1px solid transparent;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 6px rgba(11, 94, 215, 0.25);
+}
+
+.btn-corporate-primary:hover {
+    background-color: var(--color-blue-hover);
+    color: #FFFFFF;
+    box-shadow: 0 4px 12px rgba(11, 94, 215, 0.35);
+}
+
+.btn-corporate-outline {
+    background-color: #FFFFFF;
+    color: var(--color-navy);
+    font-weight: 600;
+    font-size: 0.875rem;
+    padding: 0.75rem 1.6rem;
+    border-radius: 0.5rem;
+    border: 1.5px solid var(--color-border);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.btn-corporate-outline:hover {
+    border-color: var(--color-blue-primary);
+    color: var(--color-blue-primary);
+    background-color: var(--color-blue-light);
+}
+
+.btn-corporate-red {
+    background-color: #DC2626;
+    color: #FFFFFF;
+    font-weight: 600;
+    font-size: 0.875rem;
+    padding: 0.75rem 1.6rem;
+    border-radius: 0.5rem;
+    border: 1px solid transparent;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.btn-corporate-red:hover {
+    background-color: #B91C1C;
+    color: #FFFFFF;
+}
+
+/* Corporate Badges */
+.badge-corporate {
+    background-color: var(--color-blue-light);
+    color: var(--color-blue-primary);
+    border: 1px solid rgba(11, 94, 215, 0.2);
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.35rem 0.85rem;
+    border-radius: 0.375rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.badge-gmp {
+    background-color: #ECFDF5;
+    color: #047857;
+    border: 1px solid #A7F3D0;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0.35rem 0.85rem;
+    border-radius: 0.375rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+/* Corporate Cards */
+.corporate-card {
+    background: #FFFFFF;
+    border: 1px solid var(--color-border);
+    border-radius: 0.75rem;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.corporate-card:hover {
+    border-color: #CBD5E1;
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+}
+
+/* Standard Section Header */
+.section-heading-wrapper {
+    margin-bottom: 2.5rem;
+}
+
+.section-heading {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--color-navy);
+    position: relative;
+    padding-bottom: 0.75rem;
+}
+
+.section-heading::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 50px;
+    height: 3px;
+    background-color: var(--color-blue-primary);
+    border-radius: 2px;
+}
+
+.section-heading.text-center::after {
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.section-subheading {
+    font-size: 0.95rem;
+    color: var(--color-muted-text);
+    margin-top: 0.5rem;
+    max-width: 42rem;
+}
+
+/* ==========================================================================
+   PRODUCTS CATALOGUE (PDF VIEWER - CLEAN CORPORATE SLIDER)
+   ========================================================================== */
+.pdf-corporate-viewer {
+    background: #FFFFFF;
+    border: 1px solid var(--color-border);
+    border-radius: 0.75rem;
+    box-shadow: var(--shadow-md);
+}
+
+.pdf-canvas-container {
+    position: relative;
+    background: #F1F5F9;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    min-height: 480px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.pdf-canvas-sheet {
+    background: #FFFFFF;
+    border: 1px solid #CBD5E1;
+    border-radius: 0.375rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.pdf-canvas-sheet.page-turn-out {
+    opacity: 0.2;
+    transform: scale(0.97);
+}
+
+.pdf-canvas-sheet.page-turn-in {
+    opacity: 1;
+    transform: scale(1);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 7px;
+    height: 7px;
+}
+
+::-webkit-scrollbar-track {
+    background: #F1F5F9;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #94A3B8;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #64748B;
+}
