@@ -6,6 +6,7 @@ use App\Models\Application;
 use App\Models\Blog;
 use App\Models\Category;
 use App\Models\CompanyStatistic;
+use App\Models\HeroSlide;
 use App\Models\HomepageSection;
 use App\Models\ManufacturingSection;
 use App\Models\Product;
@@ -17,6 +18,7 @@ class HomeController extends Controller
 {
     public function index()
     {
+        $heroSlides = HeroSlide::active()->get();
         $sections = HomepageSection::enabled()->get()->keyBy('section_key');
         $statistics = CompanyStatistic::active()->get();
         $categories = Category::active()->withCount('activeProducts')->get();
@@ -28,6 +30,7 @@ class HomeController extends Controller
         $seo = SeoSetting::getForPage('home');
 
         return view('frontend.home', compact(
+            'heroSlides',
             'sections',
             'statistics',
             'categories',

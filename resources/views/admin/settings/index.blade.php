@@ -129,11 +129,7 @@
                     <div class="p-6 rounded-2xl bg-slate-50 border border-slate-200/80 text-center">
                         <div class="font-bold text-navy mb-3">Adonis Chemical Logo</div>
                         <div class="h-24 bg-white rounded-xl border border-slate-200 flex items-center justify-center p-3 mb-4">
-                            @if(\App\Models\Setting::get('site_logo'))
-                                <img src="{{ asset('storage/' . \App\Models\Setting::get('site_logo')) }}" alt="Logo" class="max-h-16 max-w-full">
-                            @else
-                                <div class="font-black text-navy text-lg tracking-wider">ADONIS<span class="text-brand-blue">CHEM</span></div>
-                            @endif
+                            <img src="{{ \App\Models\Setting::getUrl('site_logo', 'assets/images/adonis_logo.png') }}" onerror="this.onerror=null;this.src='{{ asset('assets/images/adonis_logo.png') }}';" alt="Adonis Chemical Logo" class="max-h-16 max-w-full object-contain">
                         </div>
                         <input type="file" name="site_logo" accept="image/*" class="w-full text-xs text-slate-500 file:mr-2 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:bg-brand-blue file:text-white cursor-pointer">
                     </div>
@@ -142,11 +138,7 @@
                     <div class="p-6 rounded-2xl bg-slate-50 border border-slate-200/80 text-center">
                         <div class="font-bold text-navy mb-3">SINODA Brand Logo</div>
                         <div class="h-24 bg-white rounded-xl border border-slate-200 flex items-center justify-center p-3 mb-4">
-                            @if(\App\Models\Setting::get('sinoda_logo'))
-                                <img src="{{ asset('storage/' . \App\Models\Setting::get('sinoda_logo')) }}" alt="SINODA Logo" class="max-h-16 max-w-full">
-                            @else
-                                <div class="font-black text-brand-blue text-2xl tracking-widest font-heading">SINODA</div>
-                            @endif
+                            <img src="{{ \App\Models\Setting::getUrl('sinoda_logo', 'assets/images/sinoda_logo.svg') }}" onerror="this.onerror=null;this.src='{{ asset('assets/images/sinoda_logo.svg') }}';" alt="SINODA Logo" class="max-h-16 max-w-full object-contain">
                         </div>
                         <input type="file" name="sinoda_logo" accept="image/*" class="w-full text-xs text-slate-500 file:mr-2 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:bg-brand-blue file:text-white cursor-pointer">
                     </div>
@@ -155,11 +147,7 @@
                     <div class="p-6 rounded-2xl bg-slate-50 border border-slate-200/80 text-center">
                         <div class="font-bold text-navy mb-3">Adonis Group Conglomerate Logo</div>
                         <div class="h-24 bg-white rounded-xl border border-slate-200 flex items-center justify-center p-3 mb-4">
-                            @if(\App\Models\Setting::get('adonis_group_logo'))
-                                <img src="{{ asset('storage/' . \App\Models\Setting::get('adonis_group_logo')) }}" alt="Adonis Group Logo" class="max-h-16 max-w-full">
-                            @else
-                                <div class="font-bold text-slate-700 text-sm uppercase">Adonis Group</div>
-                            @endif
+                            <img src="{{ \App\Models\Setting::getUrl('adonis_group_logo', 'assets/images/adonis_group_logo.png') }}" onerror="this.onerror=null;this.src='{{ asset('assets/images/adonis_group_logo.png') }}';" alt="Adonis Group Logo" class="max-h-16 max-w-full object-contain">
                         </div>
                         <input type="file" name="adonis_group_logo" accept="image/*" class="w-full text-xs text-slate-500 file:mr-2 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:bg-brand-blue file:text-white cursor-pointer">
                     </div>

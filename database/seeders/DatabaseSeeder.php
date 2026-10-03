@@ -1083,5 +1083,8 @@ class DatabaseSeeder extends Seeder
         foreach ($seoData as $seo) {
             SeoSetting::create($seo);
         }
+
+        // 17. Hero Carousel Slides
+        $this->call(HeroSlideSeeder::class);
     }
 }

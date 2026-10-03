@@ -11,145 +11,129 @@
         
         <!-- Carousel Slides Container -->
         <div class="relative min-h-[500px] lg:min-h-[560px] flex items-center" id="hero-carousel">
-            
-            <!-- SLIDE 1: Adonis Chemical Industries Ltd Main Corporate -->
-            <div class="hero-slide active absolute inset-0 w-full h-full flex items-center transition-all duration-700 ease-in-out opacity-100 z-10">
-                <!-- Background Image with Gradient Overlay -->
-                <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=1600&q=80');">
-                    <div class="absolute inset-0 bg-gradient-to-r from-[#07172A] via-[#07172A]/90 to-[#07172A]/60"></div>
-                </div>
-                
-                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-20 w-full py-16">
-                    <div class="max-w-2xl space-y-5">
-                        <div class="flex flex-wrap items-center gap-2">
-                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded bg-blue-600 text-white text-xs font-bold uppercase tracking-wider">
-                                <i class="fa-solid fa-industry"></i> Plant: Genda, Savar, Dhaka
-                            </span>
-                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded bg-slate-800 text-slate-300 text-xs font-semibold border border-slate-700">
-                                A Concern of Adonis Group
-                            </span>
-                        </div>
+            @forelse($heroSlides as $index => $slide)
+                <div class="hero-slide {{ $index === 0 ? 'active opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none' }} absolute inset-0 w-full h-full flex items-center transition-all duration-700 ease-in-out">
+                    <!-- Background Image with Gradient Overlay -->
+                    <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('{{ $slide->image_url }}');">
+                        <div class="absolute inset-0 bg-gradient-to-r from-[#07172A] via-[#07172A]/90 to-[#07172A]/60"></div>
+                    </div>
+                    
+                    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-20 w-full py-16">
+                        <div class="max-w-2xl space-y-5">
+                            @if($slide->badge_text || $slide->badge_subtext)
+                                <div class="flex flex-wrap items-center gap-2">
+                                    @if($slide->badge_text)
+                                        @php
+                                            $badgeBg = match($slide->badge_color) {
+                                                'cyan' => 'bg-cyan-600',
+                                                'emerald' => 'bg-emerald-600',
+                                                'amber' => 'bg-amber-600',
+                                                'purple' => 'bg-purple-600',
+                                                'red' => 'bg-rose-600',
+                                                default => 'bg-blue-600',
+                                            };
+                                        @endphp
+                                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded {{ $badgeBg }} text-white text-xs font-bold uppercase tracking-wider">
+                                            @if($slide->badge_icon)<i class="{{ $slide->badge_icon }}"></i>@endif
+                                            {{ $slide->badge_text }}
+                                        </span>
+                                    @endif
+                                    @if($slide->badge_subtext)
+                                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded bg-slate-800 text-slate-300 text-xs font-semibold border border-slate-700">
+                                            {{ $slide->badge_subtext }}
+                                        </span>
+                                    @endif
+                                </div>
+                            @endif
 
-                        <h1 class="font-heading font-extrabold text-3xl sm:text-4xl lg:text-5xl text-white tracking-tight leading-tight">
-                            Adonis Chemical Industries Ltd
-                        </h1>
+                            <h1 class="font-heading font-extrabold text-3xl sm:text-4xl lg:text-5xl text-white tracking-tight leading-tight">
+                                {{ $slide->title }}
+                            </h1>
 
-                        <p class="text-base sm:text-lg text-slate-300 font-normal leading-relaxed">
-                            Leading manufacturer of premium personal care, cosmetics, and industrial chemical formulations in Savar, Bangladesh.
-                        </p>
+                            @if($slide->subtitle)
+                                <p class="text-base sm:text-lg text-slate-300 font-normal leading-relaxed">
+                                    {{ $slide->subtitle }}
+                                </p>
+                            @endif
 
-                        <div class="pt-2 flex flex-wrap items-center gap-3.5">
-                            <a href="{{ route('products.index') }}" class="btn-corporate-primary !py-3 !px-6">
-                                <i class="fa-solid fa-flask"></i>
-                                <span>Explore Our Products</span>
-                            </a>
-                            <a href="{{ route('catalogue') }}" class="btn-corporate-red !py-3 !px-6">
-                                <i class="fa-solid fa-file-pdf"></i>
-                                <span>Products Catalogue</span>
-                            </a>
-                            <a href="{{ route('contact') }}" class="px-5 py-3 rounded-lg bg-slate-800 hover:bg-slate-700 text-white font-semibold text-sm border border-slate-700 transition">
-                                <span>Contact Factory</span>
-                            </a>
+                            @if($slide->button_text || $slide->secondary_button_text || $slide->tertiary_button_text)
+                                <div class="pt-2 flex flex-wrap items-center gap-3.5">
+                                    @if($slide->button_text && $slide->button_url)
+                                        @php
+                                            $btn1Class = match($slide->button_style) {
+                                                'cyan' => 'btn-corporate-primary !bg-cyan-600 hover:!bg-cyan-700',
+                                                'emerald' => 'btn-corporate-primary !bg-emerald-600 hover:!bg-emerald-700',
+                                                'red' => 'btn-corporate-red',
+                                                'dark' => 'px-5 py-3 rounded-lg bg-slate-800 hover:bg-slate-700 text-white font-semibold text-sm border border-slate-700 transition',
+                                                default => 'btn-corporate-primary',
+                                            };
+                                        @endphp
+                                        <a href="{{ $slide->button_url }}" class="{{ $btn1Class }} !py-3 !px-6">
+                                            @if($slide->button_icon)<i class="{{ $slide->button_icon }}"></i>@endif
+                                            <span>{{ $slide->button_text }}</span>
+                                        </a>
+                                    @endif
+
+                                    @if($slide->secondary_button_text && $slide->secondary_button_url)
+                                        @php
+                                            $btn2Class = match($slide->secondary_button_style) {
+                                                'primary' => 'btn-corporate-primary',
+                                                'cyan' => 'btn-corporate-primary !bg-cyan-600 hover:!bg-cyan-700',
+                                                'dark' => 'px-5 py-3 rounded-lg bg-slate-800 hover:bg-slate-700 text-white font-semibold text-sm border border-slate-700 transition',
+                                                default => 'btn-corporate-red',
+                                            };
+                                        @endphp
+                                        <a href="{{ $slide->secondary_button_url }}" class="{{ $btn2Class }} !py-3 !px-6">
+                                            @if($slide->secondary_button_icon)<i class="{{ $slide->secondary_button_icon }}"></i>@endif
+                                            <span>{{ $slide->secondary_button_text }}</span>
+                                        </a>
+                                    @endif
+
+                                    @if($slide->tertiary_button_text && $slide->tertiary_button_url)
+                                        <a href="{{ $slide->tertiary_button_url }}" class="px-5 py-3 rounded-lg bg-slate-800 hover:bg-slate-700 text-white font-semibold text-sm border border-slate-700 transition">
+                                            <span>{{ $slide->tertiary_button_text }}</span>
+                                        </a>
+                                    @endif
+                                </div>
+                            @endif
                         </div>
                     </div>
                 </div>
-            </div>
-
-            <!-- SLIDE 2: SINODA Flagship Personal Care & Salon Formulations -->
-            <div class="hero-slide absolute inset-0 w-full h-full flex items-center transition-all duration-700 ease-in-out opacity-0 z-0 pointer-events-none">
-                <!-- Background Image with Gradient Overlay -->
-                <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&w=1600&q=80');">
-                    <div class="absolute inset-0 bg-gradient-to-r from-[#07172A] via-[#07172A]/90 to-[#07172A]/60"></div>
-                </div>
-                
-                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-20 w-full py-16">
-                    <div class="max-w-2xl space-y-5">
-                        <div class="flex flex-wrap items-center gap-2">
-                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded bg-cyan-600 text-white text-xs font-bold uppercase tracking-wider">
-                                <i class="fa-solid fa-star"></i> Flagship Cosmetic Brand
-                            </span>
-                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded bg-slate-800 text-slate-300 text-xs font-semibold border border-slate-700">
-                                450+ Partner Salons
-                            </span>
-                        </div>
-
-                        <h2 class="font-heading font-extrabold text-3xl sm:text-4xl lg:text-5xl text-white tracking-tight leading-tight">
-                            SINODA Personal Care & Salon Line
-                        </h2>
-
-                        <p class="text-base sm:text-lg text-slate-300 font-normal leading-relaxed">
-                            Formulated with bio-active keratin and pure botanicals for hair care, skin hydration, and professional salon grooming.
-                        </p>
-
-                        <div class="pt-2 flex flex-wrap items-center gap-3.5">
-                            <a href="{{ route('sinoda') }}" class="btn-corporate-primary !bg-cyan-600 hover:!bg-cyan-700 !py-3 !px-6">
-                                <i class="fa-solid fa-sparkles"></i>
-                                <span>Discover SINODA Brand</span>
-                            </a>
-                            <a href="{{ route('catalogue') }}" class="btn-corporate-red !py-3 !px-6">
-                                <i class="fa-solid fa-file-pdf"></i>
-                                <span>Download Catalogue (PDF)</span>
-                            </a>
+            @empty
+                <div class="hero-slide active absolute inset-0 w-full h-full flex items-center transition-all duration-700 ease-in-out opacity-100 z-10">
+                    <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=1600&q=80');">
+                        <div class="absolute inset-0 bg-gradient-to-r from-[#07172A] via-[#07172A]/90 to-[#07172A]/60"></div>
+                    </div>
+                    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-20 w-full py-16">
+                        <div class="max-w-2xl space-y-5">
+                            <h1 class="font-heading font-extrabold text-3xl sm:text-4xl lg:text-5xl text-white tracking-tight leading-tight">
+                                Adonis Chemical Industries Ltd
+                            </h1>
+                            <p class="text-base sm:text-lg text-slate-300 font-normal leading-relaxed">
+                                Leading manufacturer of premium personal care, cosmetics, and industrial chemical formulations in Savar, Bangladesh.
+                            </p>
                         </div>
                     </div>
                 </div>
-            </div>
-
-            <!-- SLIDE 3: Savar Production & QC Laboratory Standards -->
-            <div class="hero-slide absolute inset-0 w-full h-full flex items-center transition-all duration-700 ease-in-out opacity-0 z-0 pointer-events-none">
-                <!-- Background Image with Gradient Overlay -->
-                <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?auto=format&fit=crop&w=1600&q=80');">
-                    <div class="absolute inset-0 bg-gradient-to-r from-[#07172A] via-[#07172A]/90 to-[#07172A]/60"></div>
-                </div>
-                
-                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-20 w-full py-16">
-                    <div class="max-w-2xl space-y-5">
-                        <div class="flex flex-wrap items-center gap-2">
-                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded bg-emerald-600 text-white text-xs font-bold uppercase tracking-wider">
-                                <i class="fa-solid fa-circle-check"></i> GMP & ISO Protocols
-                            </span>
-                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded bg-slate-800 text-slate-300 text-xs font-semibold border border-slate-700">
-                                50,000+ L Monthly Capacity
-                            </span>
-                        </div>
-
-                        <h2 class="font-heading font-extrabold text-3xl sm:text-4xl lg:text-5xl text-white tracking-tight leading-tight">
-                            Advanced Chemical Formulation & Lab
-                        </h2>
-
-                        <p class="text-base sm:text-lg text-slate-300 font-normal leading-relaxed">
-                            Operating 316L stainless steel reaction vessels, multi-stage RO deionized water, and batch-by-batch laboratory validation.
-                        </p>
-
-                        <div class="pt-2 flex flex-wrap items-center gap-3.5">
-                            <a href="{{ route('manufacturing') }}" class="btn-corporate-primary !py-3 !px-6">
-                                <i class="fa-solid fa-industry"></i>
-                                <span>Savar Facility Overview</span>
-                            </a>
-                            <a href="{{ route('quality') }}" class="px-5 py-3 rounded-lg bg-slate-800 hover:bg-slate-700 text-white font-semibold text-sm border border-slate-700 transition">
-                                <span>Quality Assurance Lab</span>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
+            @endforelse
         </div>
 
-        <!-- Carousel Navigation Chevrons -->
-        <button id="carousel-prev" class="absolute left-4 top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-full bg-slate-900/70 hover:bg-blue-600 text-white border border-slate-700 flex items-center justify-center transition cursor-pointer" aria-label="Previous Slide">
-            <i class="fa-solid fa-chevron-left text-sm"></i>
-        </button>
-        <button id="carousel-next" class="absolute right-4 top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-full bg-slate-900/70 hover:bg-blue-600 text-white border border-slate-700 flex items-center justify-center transition cursor-pointer" aria-label="Next Slide">
-            <i class="fa-solid fa-chevron-right text-sm"></i>
-        </button>
+        @if($heroSlides->count() > 1)
+            <!-- Carousel Navigation Chevrons -->
+            <button id="carousel-prev" class="absolute left-4 top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-full bg-slate-900/70 hover:bg-blue-600 text-white border border-slate-700 flex items-center justify-center transition cursor-pointer" aria-label="Previous Slide">
+                <i class="fa-solid fa-chevron-left text-sm"></i>
+            </button>
+            <button id="carousel-next" class="absolute right-4 top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-full bg-slate-900/70 hover:bg-blue-600 text-white border border-slate-700 flex items-center justify-center transition cursor-pointer" aria-label="Next Slide">
+                <i class="fa-solid fa-chevron-right text-sm"></i>
+            </button>
 
-        <!-- Carousel Dot Indicators -->
-        <div class="absolute bottom-5 left-1/2 -translate-x-1/2 z-30 flex items-center gap-2" id="carousel-dots">
-            <button class="carousel-dot w-8 h-2 rounded-full bg-blue-600 transition-all duration-300" data-slide="0" aria-label="Slide 1"></button>
-            <button class="carousel-dot w-2 h-2 rounded-full bg-slate-600 hover:bg-slate-400 transition-all duration-300" data-slide="1" aria-label="Slide 2"></button>
-            <button class="carousel-dot w-2 h-2 rounded-full bg-slate-600 hover:bg-slate-400 transition-all duration-300" data-slide="2" aria-label="Slide 3"></button>
-        </div>
+            <!-- Carousel Dot Indicators -->
+            <div class="absolute bottom-5 left-1/2 -translate-x-1/2 z-30 flex items-center gap-2" id="carousel-dots">
+                @foreach($heroSlides as $idx => $slide)
+                    <button class="carousel-dot {{ $idx === 0 ? 'w-8 bg-blue-600' : 'w-2 bg-slate-600 hover:bg-slate-400' }} h-2 rounded-full transition-all duration-300" data-slide="{{ $idx }}" aria-label="Slide {{ $idx + 1 }}"></button>
+                @endforeach
+            </div>
+        @endif
 
     </section>
 

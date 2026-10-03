@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\AdminCategoryController;
 use App\Http\Controllers\Admin\AdminCompanyStatisticController;
 use App\Http\Controllers\Admin\AdminContactMessageController;
 use App\Http\Controllers\Admin\AdminDashboardController;
+use App\Http\Controllers\Admin\AdminHeroSlideController;
 use App\Http\Controllers\Admin\AdminHomepageController;
 use App\Http\Controllers\Admin\AdminManufacturingController;
 use App\Http\Controllers\Admin\AdminMediaController;
@@ -57,8 +58,21 @@ Route::post('/inquiry', [ContactController::class, 'submitInquiry'])->name('inqu
 Route::get('/search', [SearchController::class, 'index'])->name('search');
 
 Route::get('/sitemap.xml', [SitemapController::class, 'sitemap'])->name('sitemap');
-Route::get('/robots.txt', [SitemapController::class, 'robots'])->name('robots');
 Route::get('/page/{slug}', [PageController::class, 'show'])->name('pages.show');
+
+// Fallback Route for storage media files (Ensures uploaded logos & images display even without symlink)
+Route::get('/storage/{path}', function ($path) {
+    $filePath = storage_path('app/public/' . $path);
+    if (!file_exists($filePath)) {
+        abort(404);
+    }
+    $mimeType = mime_content_type($filePath) ?: 'application/octet-stream';
+    if (str_ends_with($filePath, '.svg')) {
+        $mimeType = 'image/svg+xml';
+    }
+    return response()->file($filePath, ['Content-Type' => $mimeType]);
+})->where('path', '.*')->name('storage.file');
+
 
 /*
 |--------------------------------------------------------------------------
@@ -100,6 +114,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('quality', AdminQualityController::class);
 
         // Homepage CMS
+        Route::post('/hero-slides/{heroSlide}/toggle', [AdminHeroSlideController::class, 'toggle'])->name('hero-slides.toggle');
+        Route::resource('hero-slides', AdminHeroSlideController::class)->parameters(['hero-slides' => 'heroSlide']);
+
         Route::get('/homepage', [AdminHomepageController::class, 'index'])->name('homepage.index');
         Route::get('/homepage/{homepage}/edit', [AdminHomepageController::class, 'edit'])->name('homepage.edit');
         Route::put('/homepage/{homepage}', [AdminHomepageController::class, 'update'])->name('homepage.update');

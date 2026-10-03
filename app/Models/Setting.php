@@ -20,8 +20,20 @@ class Setting extends Model
     {
         return Cache::rememberForever("setting_{$key}", function () use ($key, $default) {
             $setting = static::where('key', $key)->first();
-            return $setting ? $setting->value : $default;
+            return ($setting && !empty($setting->value)) ? $setting->value : $default;
         });
+    }
+
+    public static function getUrl(string $key, string $fallbackAsset = ''): string
+    {
+        $val = static::get($key);
+        if (!empty($val)) {
+            if (str_starts_with($val, 'http://') || str_starts_with($val, 'https://')) {
+                return $val;
+            }
+            return asset('storage/' . ltrim($val, '/'));
+        }
+        return !empty($fallbackAsset) ? asset($fallbackAsset) : '';
     }
 
     public static function set(string $key, $value, $group = 'general', $type = 'text', $label = null): void

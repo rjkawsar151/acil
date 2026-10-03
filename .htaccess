@@ -1,0 +1,24 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /
+
+    # Block access to sensitive system files and backend directories
+    RewriteRule ^(\.env|\.git|composer\.(json|lock)|package\.(json|lock)|artisan|phpunit\.xml) - [F,L,NC]
+    RewriteRule ^(app|bootstrap|config|database|resources|routes|tests)/ - [F,L,NC]
+    RewriteRule ^storage/(app|framework|logs)/ - [F,L,NC]
+
+    # Handle Authorization Header
+    RewriteCond %{HTTP:Authorization} .
+    RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
+    # Direct Storage Rewrite: Map /storage/ requests to storage/app/public/ (Solves cPanel broken images)
+    RewriteRule ^storage/(.*)$ storage/app/public/$1 [L]
+
+    # Forward all other requests transparently to the public directory
+    RewriteCond %{REQUEST_URI} !^/public/
+    RewriteRule ^$ public/ [L]
+    RewriteCond %{REQUEST_URI} !^/public/
+    RewriteRule (.*) public/$1 [L]
+</IfModule>
+
+Options -Indexes

@@ -108,6 +108,11 @@
                         Content Management
                     </div>
 
+                    <a href="{{ route('admin.hero-slides.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-medium transition {{ Request::is('admin/hero-slides*') ? 'bg-brand-blue text-white shadow-lg shadow-blue-600/30' : 'text-slate-300 hover:bg-slate-800/80 hover:text-white' }}">
+                        <i class="fa-solid fa-images w-5 text-center text-cyan-400"></i>
+                        <span>Hero Carousel Slides</span>
+                    </a>
+
                     <a href="{{ route('admin.homepage.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-medium transition {{ Request::is('admin/homepage*') ? 'bg-brand-blue text-white shadow-lg shadow-blue-600/30' : 'text-slate-300 hover:bg-slate-800/80 hover:text-white' }}">
                         <i class="fa-solid fa-house-laptop w-5 text-center text-amber-400"></i>
                         <span>Homepage Sections</span>

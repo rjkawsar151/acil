@@ -146,8 +146,8 @@
             <div class="flex items-center justify-between h-20">
                 
                 @php
-                    $siteLogo = \App\Models\Setting::get('site_logo', 'logos/hRo9h37fPMPfn6RaNHVXeD3PB7eGM3rFBJxGB69m.png');
-                    $sinodaLogo = \App\Models\Setting::get('sinoda_logo', 'logos/H28qdMfv4Nc4AgCUbB39bDUZH3GoqasbSMHC9cz9.svg');
+                    $siteLogoUrl = \App\Models\Setting::getUrl('site_logo', 'assets/images/adonis_logo.png');
+                    $sinodaLogoUrl = \App\Models\Setting::getUrl('sinoda_logo', 'assets/images/sinoda_logo.svg');
                     $headerNavItems = \App\Models\NavigationItem::where('location', 'header')
                         ->whereNull('parent_id')
                         ->where('is_active', true)
@@ -159,12 +159,12 @@
                 <!-- Brand Logos (Adonis Chemical & SINODA) -->
                 <div class="flex items-center gap-3 sm:gap-4 py-1">
                     <a href="{{ route('home') }}" class="flex items-center" title="{{ \App\Models\Setting::get('site_name', 'Adonis Chemical Industries Ltd') }}">
-                        <img src="{{ asset('storage/' . $siteLogo) }}" alt="{{ \App\Models\Setting::get('site_name', 'Adonis Chemical Industries Ltd') }}" class="h-10 sm:h-12 w-auto object-contain" style="max-height: 52px;">
+                        <img src="{{ $siteLogoUrl }}" onerror="this.onerror=null;this.src='{{ asset('assets/images/adonis_logo.png') }}';" alt="{{ \App\Models\Setting::get('site_name', 'Adonis Chemical Industries Ltd') }}" class="h-10 sm:h-12 w-auto object-contain" style="max-height: 52px;">
                     </a>
-                    @if($sinodaLogo)
+                    @if($sinodaLogoUrl)
                         <div class="h-7 sm:h-8 w-px bg-slate-200"></div>
                         <a href="{{ route('sinoda') }}" class="flex items-center" title="SINODA Personal Care & Salon Brand">
-                            <img src="{{ asset('storage/' . $sinodaLogo) }}" alt="SINODA" class="h-6 sm:h-7 w-auto object-contain" style="max-height: 32px;">
+                            <img src="{{ $sinodaLogoUrl }}" onerror="this.onerror=null;this.src='{{ asset('assets/images/sinoda_logo.svg') }}';" alt="SINODA" class="h-6 sm:h-7 w-auto object-contain" style="max-height: 32px;">
                         </a>
                     @endif
                 </div>
@@ -252,10 +252,10 @@
         <div>
             <div class="flex items-center justify-between pb-6 border-b border-slate-800">
                 <div class="flex items-center gap-2 bg-white rounded-xl px-2.5 py-1 shadow-sm">
-                    <img src="{{ asset('storage/' . $siteLogo) }}" alt="Adonis Chemical" class="h-7 w-auto object-contain">
-                    @if($sinodaLogo)
+                    <img src="{{ $siteLogoUrl }}" onerror="this.onerror=null;this.src='{{ asset('assets/images/adonis_logo.png') }}';" alt="Adonis Chemical" class="h-7 w-auto object-contain">
+                    @if($sinodaLogoUrl)
                         <div class="h-5 w-px bg-slate-300"></div>
-                        <img src="{{ asset('storage/' . $sinodaLogo) }}" alt="SINODA" class="h-5 w-auto object-contain">
+                        <img src="{{ $sinodaLogoUrl }}" onerror="this.onerror=null;this.src='{{ asset('assets/images/sinoda_logo.svg') }}';" alt="SINODA" class="h-5 w-auto object-contain">
                     @endif
                 </div>
                 <button id="mobile-menu-close" class="p-2 text-slate-400 hover:text-white text-xl">
