@@ -13,9 +13,9 @@
         <div class="relative min-h-[500px] lg:min-h-[560px] flex items-center" id="hero-carousel">
             @forelse($heroSlides as $index => $slide)
                 <div class="hero-slide {{ $index === 0 ? 'active opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none' }} absolute inset-0 w-full h-full flex items-center transition-all duration-700 ease-in-out">
-                    <!-- Background Image with Gradient Overlay -->
-                    <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('{{ $slide->image_url }}');">
-                        <div class="absolute inset-0 bg-gradient-to-r from-[#07172A] via-[#07172A]/90 to-[#07172A]/60"></div>
+                    <!-- Background Image (Fitted top & bottom, aligned to right side) -->
+                    <div class="absolute inset-0 bg-cover bg-right bg-no-repeat" style="background-image: url('{{ $slide->image_url }}'); background-position: right center; background-size: cover;">
+                        <div class="absolute inset-0 bg-gradient-to-r from-[#07172A] via-[#07172A]/90 to-[#07172A]/30 lg:from-[#07172A] lg:via-[#07172A]/80 lg:to-transparent"></div>
                     </div>
                     
                     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-20 w-full py-16">
@@ -101,8 +101,8 @@
                 </div>
             @empty
                 <div class="hero-slide active absolute inset-0 w-full h-full flex items-center transition-all duration-700 ease-in-out opacity-100 z-10">
-                    <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=1600&q=80');">
-                        <div class="absolute inset-0 bg-gradient-to-r from-[#07172A] via-[#07172A]/90 to-[#07172A]/60"></div>
+                    <div class="absolute inset-0 bg-cover bg-right bg-no-repeat" style="background-image: url('https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=1600&q=80'); background-position: right center; background-size: cover;">
+                        <div class="absolute inset-0 bg-gradient-to-r from-[#07172A] via-[#07172A]/90 to-[#07172A]/30 lg:from-[#07172A] lg:via-[#07172A]/80 lg:to-transparent"></div>
                     </div>
                     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-20 w-full py-16">
                         <div class="max-w-2xl space-y-5">

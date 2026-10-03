@@ -241,16 +241,16 @@
                         <i class="fa-solid fa-magnifying-glass absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
                     </form>
 
-                    <button onclick="openInquiryModal()" class="btn-corporate-primary text-xs !py-2.5 !px-4">
+                    <a href="{{ route('inquiry.index') }}" class="btn-corporate-primary text-xs !py-2.5 !px-4">
                         <i class="fa-solid fa-envelope"></i> Inquire Now
-                    </button>
+                    </a>
                 </div>
 
                 <!-- Mobile Menu Button -->
                 <div class="flex items-center gap-2 lg:hidden">
-                    <button onclick="openInquiryModal()" class="w-9 h-9 rounded-lg bg-blue-600 text-white flex items-center justify-center text-sm shadow-sm">
+                    <a href="{{ route('inquiry.index') }}" class="w-9 h-9 rounded-lg bg-blue-600 text-white flex items-center justify-center text-sm shadow-sm" aria-label="Product Inquiry">
                         <i class="fa-solid fa-envelope"></i>
-                    </button>
+                    </a>
                     <button id="mobile-menu-btn" class="p-2 rounded-lg text-2xl text-slate-700 hover:text-blue-600" aria-label="Toggle mobile menu">
                         <i class="fa-solid fa-bars"></i>
                     </button>
@@ -335,9 +335,9 @@
         <div class="pt-6 border-t border-slate-800 text-xs text-slate-400">
             <p class="font-bold text-white mb-1">Genda, Savar, Dhaka</p>
             <p class="mb-3">A Concern of Adonis Group</p>
-            <button onclick="openInquiryModal()" class="w-full btn-scientific-primary text-xs !py-3">
+            <a href="{{ route('inquiry.index') }}" class="w-full btn-scientific-primary text-xs !py-3 inline-flex items-center justify-center gap-2">
                 <i class="fa-solid fa-paper-plane"></i> Submit Inquiry
-            </button>
+            </a>
         </div>
     </div>
 
