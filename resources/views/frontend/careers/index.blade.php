@@ -43,19 +43,19 @@
     </section>
 
     <!-- Filter & Search Toolbar -->
-    <section class="bg-slate-50 border-b border-slate-200 py-8 sticky top-20 z-20 shadow-sm backdrop-blur-md bg-white/90">
+    <section class="bg-slate-50 border-b border-slate-200 py-4 sm:py-6 sticky top-16 md:top-20 z-20 shadow-sm backdrop-blur-md bg-white/95">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <form action="{{ route('careers.index') }}" method="GET" class="grid grid-cols-1 md:grid-cols-12 gap-3 items-center">
                 
                 <!-- Search Input -->
                 <div class="md:col-span-4 relative">
-                    <input type="text" name="search" value="{{ $search }}" placeholder="Search position or keywords..." class="w-full pl-10 pr-4 py-2.5 text-sm rounded-xl border border-slate-300 focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 outline-none transition bg-white">
+                    <input type="text" name="search" value="{{ $search }}" placeholder="Search position or keywords..." class="w-full pl-10 pr-4 py-2.5 text-base sm:text-sm rounded-xl border border-slate-300 focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 outline-none transition bg-white">
                     <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
                 </div>
 
                 <!-- Department Filter -->
                 <div class="md:col-span-3">
-                    <select name="department" class="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-300 focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 outline-none transition bg-white text-slate-700">
+                    <select name="department" class="w-full px-3.5 py-2.5 text-base sm:text-sm rounded-xl border border-slate-300 focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 outline-none transition bg-white text-slate-700">
                         <option value="all">All Departments</option>
                         @foreach($departments as $dept)
                             <option value="{{ $dept->slug }}" {{ $departmentSlug === $dept->slug ? 'selected' : '' }}>
@@ -67,7 +67,7 @@
 
                 <!-- Employment Type Filter -->
                 <div class="md:col-span-3">
-                    <select name="type" class="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-300 focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 outline-none transition bg-white text-slate-700">
+                    <select name="type" class="w-full px-3.5 py-2.5 text-base sm:text-sm rounded-xl border border-slate-300 focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 outline-none transition bg-white text-slate-700">
                         <option value="all">All Employment Types</option>
                         <option value="full_time" {{ $employmentType === 'full_time' ? 'selected' : '' }}>Full Time</option>
                         <option value="part_time" {{ $employmentType === 'part_time' ? 'selected' : '' }}>Part Time</option>
@@ -82,8 +82,8 @@
                         <i class="fa-solid fa-filter"></i> Filter
                     </button>
                     @if($search || ($departmentSlug && $departmentSlug !== 'all') || ($employmentType && $employmentType !== 'all'))
-                        <a href="{{ route('careers.index') }}" class="p-2.5 rounded-xl border border-slate-300 hover:bg-slate-100 text-slate-600 transition" title="Clear Filters">
-                            <i class="fa-solid fa-rotate-left"></i>
+                        <a href="{{ route('careers.index') }}" class="p-2.5 rounded-xl border border-slate-300 hover:bg-slate-100 text-slate-600 transition flex items-center justify-center" title="Clear Filters">
+                            <i class="fa-solid fa-rotate-left text-xs"></i>
                         </a>
                     @endif
                 </div>
