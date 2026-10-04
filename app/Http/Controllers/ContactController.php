@@ -143,7 +143,7 @@ class ContactController extends Controller
         $inquiry = ProductInquiry::create($validated);
 
         // Send alert emails to configured recipients from .env (e.g. mail1@mail.com,mail2@mail.com)
-        $alertEmailsConfig = env('INQUIRY_ALERT_EMAILS', config('mail.inquiry_alert_emails'));
+        $alertEmailsConfig = config('mail.inquiry_alert_emails');
         if ($alertEmailsConfig) {
             $recipients = array_filter(array_map('trim', explode(',', (string)$alertEmailsConfig)));
             if (!empty($recipients)) {

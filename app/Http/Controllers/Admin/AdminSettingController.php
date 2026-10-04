@@ -35,23 +35,14 @@ class AdminSettingController extends Controller
             }
         };
 
-        // Handle uploaded images (e.g. logos)
-        if ($request->hasFile('site_logo')) {
-            $path = $request->file('site_logo')->store('logos', 'public');
-            Setting::set('site_logo', $path, 'logos', 'image');
-            $mirrorToPublic($path);
-        }
-
-        if ($request->hasFile('sinoda_logo')) {
-            $path = $request->file('sinoda_logo')->store('logos', 'public');
-            Setting::set('sinoda_logo', $path, 'logos', 'image');
-            $mirrorToPublic($path);
-        }
-
-        if ($request->hasFile('adonis_group_logo')) {
-            $path = $request->file('adonis_group_logo')->store('logos', 'public');
-            Setting::set('adonis_group_logo', $path, 'logos', 'image');
-            $mirrorToPublic($path);
+        // Handle uploaded images (e.g. logos & homepage images)
+        $fileFields = ['site_logo', 'sinoda_logo', 'adonis_group_logo', 'about_image_1', 'about_image_2', 'sinoda_banner_image'];
+        foreach ($fileFields as $field) {
+            if ($request->hasFile($field)) {
+                $path = $request->file($field)->store('settings', 'public');
+                Setting::set($field, $path, 'images', 'image');
+                $mirrorToPublic($path);
+            }
         }
 
         if ($request->hasFile('catalogue_pdf')) {

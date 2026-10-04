@@ -32,12 +32,12 @@
             </button>
         </div>
 
-        <!-- TAB 1: General Identity -->
+        <!-- TAB 1: General Identity & Top Bar -->
         <div x-show="tab === 'general'" class="space-y-6">
             <div class="bg-white rounded-3xl border border-slate-200/80 p-8 shadow-sm">
                 <h3 class="font-bold text-navy text-base mb-6 flex items-center gap-2">
                     <i class="fa-solid fa-building text-brand-blue"></i>
-                    <span>Company & Brand Information</span>
+                    <span>Company & Top Header Bar Information</span>
                 </h3>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs">
@@ -47,8 +47,18 @@
                     </div>
 
                     <div>
-                        <label class="block font-bold text-navy mb-1.5">Parent Conglomerate</label>
+                        <label class="block font-bold text-navy mb-1.5">Parent Conglomerate / Group</label>
                         <input type="text" name="parent_company" value="{{ \App\Models\Setting::get('parent_company', 'A Concern of Adonis Group') }}" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-brand-blue/20 focus:border-brand-blue outline-none">
+                    </div>
+
+                    <div>
+                        <label class="block font-bold text-navy mb-1.5">Top Bar Plant Info (e.g. Plant: Genda, Savar, Dhaka)</label>
+                        <input type="text" name="topbar_plant_text" value="{{ \App\Models\Setting::get('topbar_plant_text', 'Plant: Genda, Karnapara, Savar, Dhaka') }}" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-brand-blue/20 focus:border-brand-blue outline-none">
+                    </div>
+
+                    <div>
+                        <label class="block font-bold text-navy mb-1.5">Top Bar Concern Text (e.g. A Concern of Adonis Group)</label>
+                        <input type="text" name="topbar_concern_text" value="{{ \App\Models\Setting::get('topbar_concern_text', 'A Concern of Adonis Group') }}" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-brand-blue/20 focus:border-brand-blue outline-none">
                     </div>
 
                     <div>
@@ -79,8 +89,8 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs">
                     <div>
-                        <label class="block font-bold text-navy mb-1.5">General Inquiries Email</label>
-                        <input type="email" name="primary_email" value="{{ \App\Models\Setting::get('primary_email', 'info@adonischemical.com') }}" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-brand-blue/20 focus:border-brand-blue outline-none">
+                        <label class="block font-bold text-navy mb-1.5">General Inquiries Email (Top Header & Contact)</label>
+                        <input type="email" name="contact_email" value="{{ \App\Models\Setting::get('contact_email', \App\Models\Setting::get('primary_email', 'info@adonischemical.com')) }}" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-brand-blue/20 focus:border-brand-blue outline-none">
                     </div>
 
                     <div>
@@ -89,7 +99,7 @@
                     </div>
 
                     <div>
-                        <label class="block font-bold text-navy mb-1.5">Telephone / PABX</label>
+                        <label class="block font-bold text-navy mb-1.5">Telephone / PABX (Top Header & Contact)</label>
                         <input type="text" name="primary_phone" value="{{ \App\Models\Setting::get('primary_phone', '+880 2 7748891-4') }}" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-brand-blue/20 focus:border-brand-blue outline-none">
                     </div>
 
@@ -116,15 +126,15 @@
             </div>
         </div>
 
-        <!-- TAB 3: Logos & Badges -->
+        <!-- TAB 3: Logos & Homepage Section Images -->
         <div x-show="tab === 'logos'" class="space-y-6" style="display: none;">
             <div class="bg-white rounded-3xl border border-slate-200/80 p-8 shadow-sm">
                 <h3 class="font-bold text-navy text-base mb-6 flex items-center gap-2">
                     <i class="fa-solid fa-image text-brand-blue"></i>
-                    <span>Logos & Brand Graphics</span>
+                    <span>Brand Logos & Homepage Facility Images</span>
                 </h3>
 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-xs">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-xs mb-8">
                     <!-- ACIL Logo -->
                     <div class="p-6 rounded-2xl bg-slate-50 border border-slate-200/80 text-center">
                         <div class="font-bold text-navy mb-3">Adonis Chemical Logo</div>
@@ -150,6 +160,33 @@
                             <img src="{{ \App\Models\Setting::getUrl('adonis_group_logo', 'assets/images/adonis_group_logo.png') }}" onerror="this.onerror=null;this.src='{{ asset('assets/images/adonis_group_logo.png') }}';" alt="Adonis Group Logo" class="max-h-16 max-w-full object-contain">
                         </div>
                         <input type="file" name="adonis_group_logo" accept="image/*" class="w-full text-xs text-slate-500 file:mr-2 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:bg-brand-blue file:text-white cursor-pointer">
+                    </div>
+                </div>
+
+                <!-- Homepage Facility Images -->
+                <h4 class="font-bold text-navy text-sm mb-4 border-t border-slate-100 pt-6 flex items-center gap-2">
+                    <i class="fa-solid fa-industry text-brand-blue"></i>
+                    <span>Homepage About Section Facility Photos</span>
+                </h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs">
+                    <div class="p-6 rounded-2xl bg-slate-50 border border-slate-200/80">
+                        <div class="font-bold text-navy mb-2">Facility Photo 1 (Savar Production Unit)</div>
+                        <div class="h-40 bg-white rounded-xl border border-slate-200 overflow-hidden mb-3">
+                            <img src="{{ \App\Models\Setting::getUrl('about_image_1', 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=800&q=80') }}" alt="Facility Photo 1" class="w-full h-full object-cover">
+                        </div>
+                        <label class="block font-semibold text-slate-600 mb-1">Caption / Label</label>
+                        <input type="text" name="about_caption_1" value="{{ \App\Models\Setting::get('about_caption_1', 'Savar Blending & Production Unit') }}" class="w-full px-3 py-2 mb-3 rounded-lg border border-slate-200 text-xs">
+                        <input type="file" name="about_image_1" accept="image/*" class="w-full text-xs text-slate-500 file:mr-2 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:bg-brand-blue file:text-white cursor-pointer">
+                    </div>
+
+                    <div class="p-6 rounded-2xl bg-slate-50 border border-slate-200/80">
+                        <div class="font-bold text-navy mb-2">Facility Photo 2 (Formulation & QC Lab)</div>
+                        <div class="h-40 bg-white rounded-xl border border-slate-200 overflow-hidden mb-3">
+                            <img src="{{ \App\Models\Setting::getUrl('about_image_2', 'https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?auto=format&fit=crop&w=800&q=80') }}" alt="Facility Photo 2" class="w-full h-full object-cover">
+                        </div>
+                        <label class="block font-semibold text-slate-600 mb-1">Caption / Label</label>
+                        <input type="text" name="about_caption_2" value="{{ \App\Models\Setting::get('about_caption_2', 'Analytical Formulation Laboratory') }}" class="w-full px-3 py-2 mb-3 rounded-lg border border-slate-200 text-xs">
+                        <input type="file" name="about_image_2" accept="image/*" class="w-full text-xs text-slate-500 file:mr-2 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:bg-brand-blue file:text-white cursor-pointer">
                     </div>
                 </div>
             </div>

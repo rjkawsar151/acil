@@ -141,113 +141,116 @@
     <!-- ========================================================================= -->
     <!-- 2. CORPORATE KEY METRICS STRIP                                             -->
     <!-- ========================================================================= -->
-    <section class="bg-white py-12 border-b border-slate-200">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 text-center sm:text-left">
-                
-                <div class="p-5 rounded-xl bg-slate-50 border border-slate-200">
-                    <div class="text-xs font-bold text-blue-700 uppercase tracking-wider mb-1">Monthly Production</div>
-                    <div class="font-heading font-black text-3xl sm:text-4xl text-navy">50,000<span class="text-blue-600">+</span> L</div>
-                    <p class="text-xs text-slate-500 mt-1">Industrial blending output at Savar plant</p>
+    @if(isset($statistics) && $statistics->count() > 0)
+        <section class="bg-white py-12 border-b border-slate-200">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 text-center sm:text-left">
+                    @foreach($statistics as $stat)
+                        <div class="p-5 rounded-xl bg-slate-50 border border-slate-200">
+                            <div class="text-xs font-bold text-blue-700 uppercase tracking-wider mb-1">{{ $stat->title }}</div>
+                            <div class="font-heading font-black text-3xl sm:text-4xl text-navy">
+                                {{ $stat->prefix }}{{ $stat->value }}<span class="text-blue-600">{{ $stat->suffix }}</span>
+                            </div>
+                            @if($stat->description)
+                                <p class="text-xs text-slate-500 mt-1">{{ $stat->description }}</p>
+                            @endif
+                        </div>
+                    @endforeach
                 </div>
-
-                <div class="p-5 rounded-xl bg-slate-50 border border-slate-200">
-                    <div class="text-xs font-bold text-blue-700 uppercase tracking-wider mb-1">Active Formulations</div>
-                    <div class="font-heading font-black text-3xl sm:text-4xl text-navy">150<span class="text-blue-600">+</span></div>
-                    <p class="text-xs text-slate-500 mt-1">Cosmetics, hair care & chemical lines</p>
-                </div>
-
-                <div class="p-5 rounded-xl bg-slate-50 border border-slate-200">
-                    <div class="text-xs font-bold text-blue-700 uppercase tracking-wider mb-1">Salon & Retail Network</div>
-                    <div class="font-heading font-black text-3xl sm:text-4xl text-navy">450<span class="text-blue-600">+</span></div>
-                    <p class="text-xs text-slate-500 mt-1">Professional partner salons in Bangladesh</p>
-                </div>
-
-                <div class="p-5 rounded-xl bg-slate-50 border border-slate-200">
-                    <div class="text-xs font-bold text-blue-700 uppercase tracking-wider mb-1">Quality Validation</div>
-                    <div class="font-heading font-black text-3xl sm:text-4xl text-navy">100<span class="text-blue-600">%</span></div>
-                    <p class="text-xs text-slate-500 mt-1">Batch tested with in-house analytical lab</p>
-                </div>
-
             </div>
-        </div>
-    </section>
+        </section>
+    @endif
 
 
     <!-- ========================================================================= -->
     <!-- 3. COMPANY PROFILE & ABOUT ADONIS CHEMICAL INDUSTRIES LTD                 -->
     <!-- ========================================================================= -->
-    <section class="py-16 lg:py-20 bg-white border-b border-slate-200">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-                
-                <!-- Left: Plant Photography -->
-                <div class="lg:col-span-6">
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="rounded-xl overflow-hidden border border-slate-200 shadow-sm">
-                            <img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=800&q=80" alt="Adonis Chemical Facility" class="h-64 sm:h-72 w-full object-cover">
-                            <div class="p-3 bg-slate-50 text-xs font-semibold text-slate-700 border-t border-slate-200">
-                                Savar Blending & Production Unit
+    @php
+        $aboutSec = $sections['about_intro'] ?? null;
+        $aboutImg1 = \App\Models\Setting::getUrl('about_image_1', $aboutSec?->image_url ?: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=800&q=80');
+        $aboutImg2 = \App\Models\Setting::getUrl('about_image_2', 'https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?auto=format&fit=crop&w=800&q=80');
+        $aboutCap1 = \App\Models\Setting::get('about_caption_1', 'Savar Blending & Production Unit');
+        $aboutCap2 = \App\Models\Setting::get('about_caption_2', 'Analytical Formulation Laboratory');
+    @endphp
+    @if(!$aboutSec || $aboutSec->is_enabled)
+        <section class="py-16 lg:py-20 bg-white border-b border-slate-200">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                    
+                    <!-- Left: Plant Photography -->
+                    <div class="lg:col-span-6">
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="rounded-xl overflow-hidden border border-slate-200 shadow-sm">
+                                <img src="{{ $aboutImg1 }}" alt="{{ $aboutCap1 }}" class="h-64 sm:h-72 w-full object-cover">
+                                <div class="p-3 bg-slate-50 text-xs font-semibold text-slate-700 border-t border-slate-200">
+                                    {{ $aboutCap1 }}
+                                </div>
+                            </div>
+                            <div class="rounded-xl overflow-hidden border border-slate-200 shadow-sm mt-6">
+                                <img src="{{ $aboutImg2 }}" alt="{{ $aboutCap2 }}" class="h-64 sm:h-72 w-full object-cover">
+                                <div class="p-3 bg-slate-50 text-xs font-semibold text-slate-700 border-t border-slate-200">
+                                    {{ $aboutCap2 }}
+                                </div>
                             </div>
                         </div>
-                        <div class="rounded-xl overflow-hidden border border-slate-200 shadow-sm mt-6">
-                            <img src="https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?auto=format&fit=crop&w=800&q=80" alt="Quality Assurance Lab" class="h-64 sm:h-72 w-full object-cover">
-                            <div class="p-3 bg-slate-50 text-xs font-semibold text-slate-700 border-t border-slate-200">
-                                Analytical Formulation Laboratory
+                    </div>
+
+                    <!-- Right: Corporate Text -->
+                    <div class="lg:col-span-6 space-y-5">
+                        <span class="badge-corporate">
+                            <i class="fa-solid fa-building"></i> {{ $aboutSec->badge_text ?? 'Company Profile' }}
+                        </span>
+                        <h2 class="font-heading font-extrabold text-2xl sm:text-3xl lg:text-4xl text-navy leading-snug">
+                            {{ $aboutSec->title ?? 'Leading Chemical & Cosmetic Manufacturing in Savar, Dhaka' }}
+                        </h2>
+                        @if($aboutSec && $aboutSec->content)
+                            <div class="text-sm sm:text-base text-slate-600 leading-relaxed space-y-3">
+                                {!! nl2br(e($aboutSec->content)) !!}
+                            </div>
+                        @else
+                            <p class="text-sm sm:text-base text-slate-600 leading-relaxed">
+                                Adonis Chemical Industries Ltd is an established industrial chemical and cosmetics manufacturer in Bangladesh, operating under the renowned Adonis Group. Our modern production plant at Genda, Karnapara, Savar is equipped with state-of-the-art closed stainless-steel mixing vessels, automated packaging lines, and dedicated quality control laboratories.
+                            </p>
+                            <p class="text-sm text-slate-600 leading-relaxed">
+                                Through our flagship brand <strong>SINODA</strong>, we serve top-tier professional grooming salons, retail cosmetics distributors, and institutional clients across Bangladesh with high-performance hair care, skin care, and specialized chemical formulations.
+                            </p>
+                        @endif
+
+                        <!-- Core Strengths -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                            <div class="flex items-start gap-2.5 text-xs text-slate-700">
+                                <i class="fa-solid fa-circle-check text-blue-600 mt-0.5"></i>
+                                <span><strong>316L Stainless Steel</strong> closed mixing reactors</span>
+                            </div>
+                            <div class="flex items-start gap-2.5 text-xs text-slate-700">
+                                <i class="fa-solid fa-circle-check text-blue-600 mt-0.5"></i>
+                                <span><strong>Multi-Stage RO</strong> deionized water treatment</span>
+                            </div>
+                            <div class="flex items-start gap-2.5 text-xs text-slate-700">
+                                <i class="fa-solid fa-circle-check text-blue-600 mt-0.5"></i>
+                                <span><strong>Dermatologically Assayed</strong> safe ingredients</span>
+                            </div>
+                            <div class="flex items-start gap-2.5 text-xs text-slate-700">
+                                <i class="fa-solid fa-circle-check text-blue-600 mt-0.5"></i>
+                                <span><strong>Prompt Delivery</strong> across Bangladesh</span>
                             </div>
                         </div>
+
+                        <div class="pt-4 flex items-center gap-4">
+                            <a href="{{ $aboutSec->button_url ?? route('about') }}" class="btn-corporate-primary">
+                                <span>{{ $aboutSec->button_text ?? 'Read Full Profile' }}</span>
+                                <i class="fa-solid fa-arrow-right text-xs"></i>
+                            </a>
+                            <a href="{{ $aboutSec->secondary_button_url ?? route('manufacturing') }}" class="btn-corporate-outline">
+                                <span>{{ $aboutSec->secondary_button_text ?? 'Savar Facility Details' }}</span>
+                            </a>
+                        </div>
                     </div>
+
                 </div>
-
-                <!-- Right: Corporate Text -->
-                <div class="lg:col-span-6 space-y-5">
-                    <span class="badge-corporate">
-                        <i class="fa-solid fa-building"></i> Company Profile
-                    </span>
-                    <h2 class="font-heading font-extrabold text-2xl sm:text-3xl lg:text-4xl text-navy leading-snug">
-                        Leading Chemical & Cosmetic Manufacturing in Savar, Dhaka
-                    </h2>
-                    <p class="text-sm sm:text-base text-slate-600 leading-relaxed">
-                        Adonis Chemical Industries Ltd is an established industrial chemical and cosmetics manufacturer in Bangladesh, operating under the renowned Adonis Group. Our modern production plant at Genda, Karnapara, Savar is equipped with state-of-the-art closed stainless-steel mixing vessels, automated packaging lines, and dedicated quality control laboratories.
-                    </p>
-                    <p class="text-sm text-slate-600 leading-relaxed">
-                        Through our flagship brand <strong>SINODA</strong>, we serve top-tier professional grooming salons, retail cosmetics distributors, and institutional clients across Bangladesh with high-performance hair care, skin care, and specialized chemical formulations.
-                    </p>
-
-                    <!-- Core Strengths -->
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
-                        <div class="flex items-start gap-2.5 text-xs text-slate-700">
-                            <i class="fa-solid fa-circle-check text-blue-600 mt-0.5"></i>
-                            <span><strong>316L Stainless Steel</strong> closed mixing reactors</span>
-                        </div>
-                        <div class="flex items-start gap-2.5 text-xs text-slate-700">
-                            <i class="fa-solid fa-circle-check text-blue-600 mt-0.5"></i>
-                            <span><strong>Multi-Stage RO</strong> deionized water treatment</span>
-                        </div>
-                        <div class="flex items-start gap-2.5 text-xs text-slate-700">
-                            <i class="fa-solid fa-circle-check text-blue-600 mt-0.5"></i>
-                            <span><strong>Dermatologically Assayed</strong> safe ingredients</span>
-                        </div>
-                        <div class="flex items-start gap-2.5 text-xs text-slate-700">
-                            <i class="fa-solid fa-circle-check text-blue-600 mt-0.5"></i>
-                            <span><strong>Prompt Delivery</strong> across Bangladesh</span>
-                        </div>
-                    </div>
-
-                    <div class="pt-4 flex items-center gap-4">
-                        <a href="{{ route('about') }}" class="btn-corporate-primary">
-                            <span>Read Full Profile</span>
-                            <i class="fa-solid fa-arrow-right text-xs"></i>
-                        </a>
-                        <a href="{{ route('manufacturing') }}" class="btn-corporate-outline">
-                            <span>Savar Facility Details</span>
-                        </a>
-                    </div>
-                </div>
-
             </div>
-        </div>
-    </section>
+        </section>
+    @endif
 
 
     <!-- ========================================================================= -->
@@ -311,46 +314,51 @@
     <!-- ========================================================================= -->
     <!-- 7. SINODA FLAGSHIP BRAND FEATURE                                          -->
     <!-- ========================================================================= -->
-    <section class="py-16 bg-[#07172A] text-white">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
-                
-                <div class="lg:col-span-8 space-y-4">
-                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded bg-blue-900/60 border border-blue-700 text-xs font-bold uppercase tracking-wider text-blue-300">
-                        <i class="fa-solid fa-star text-amber-400"></i> Flagship Cosmetic Brand
+    @php
+        $sinodaSec = $sections['sinoda_showcase'] ?? null;
+    @endphp
+    @if(!$sinodaSec || $sinodaSec->is_enabled)
+        <section class="py-16 bg-[#07172A] text-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+                    
+                    <div class="lg:col-span-8 space-y-4">
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded bg-blue-900/60 border border-blue-700 text-xs font-bold uppercase tracking-wider text-blue-300">
+                            <i class="fa-solid fa-star text-amber-400"></i> {{ $sinodaSec->badge_text ?? 'Flagship Cosmetic Brand' }}
+                        </div>
+                        <h2 class="font-heading font-extrabold text-2xl sm:text-3xl lg:text-4xl text-white">
+                            {{ $sinodaSec->title ?? 'SINODA — Professional Salon Care & Daily Grooming' }}
+                        </h2>
+                        <p class="text-slate-300 text-sm sm:text-base leading-relaxed max-w-3xl">
+                            {{ $sinodaSec->content ?? 'Formulated and manufactured exclusively by Adonis Chemical Industries Ltd, SINODA is the trusted cosmetic and grooming brand for more than 450 premium salons across Dhaka, Chittagong, and major divisions in Bangladesh.' }}
+                        </p>
+                        <div class="flex flex-wrap gap-4 pt-2">
+                            <a href="{{ $sinodaSec->button_url ?? route('sinoda') }}" class="btn-corporate-primary !bg-blue-600 hover:!bg-blue-500">
+                                <span>{{ $sinodaSec->button_text ?? 'Explore SINODA Brand Range' }}</span>
+                                <i class="fa-solid fa-arrow-right text-xs"></i>
+                            </a>
+                            <a href="{{ $sinodaSec->secondary_button_url ?? route('catalogue') }}" class="btn-corporate-outline !bg-transparent !text-white !border-slate-600 hover:!bg-slate-800">
+                                <i class="fa-solid fa-file-pdf text-red-400"></i>
+                                <span>{{ $sinodaSec->secondary_button_text ?? 'View Product Catalogue' }}</span>
+                            </a>
+                        </div>
                     </div>
-                    <h2 class="font-heading font-extrabold text-2xl sm:text-3xl lg:text-4xl text-white">
-                        SINODA — Professional Salon Care & Daily Grooming
-                    </h2>
-                    <p class="text-slate-300 text-sm sm:text-base leading-relaxed max-w-3xl">
-                        Formulated and manufactured exclusively by Adonis Chemical Industries Ltd, SINODA is the trusted cosmetic and grooming brand for more than 450 premium salons across Dhaka, Chittagong, and major divisions in Bangladesh.
-                    </p>
-                    <div class="flex flex-wrap gap-4 pt-2">
-                        <a href="{{ route('sinoda') }}" class="btn-corporate-primary !bg-blue-600 hover:!bg-blue-500">
-                            <span>Explore SINODA Brand Range</span>
-                            <i class="fa-solid fa-arrow-right text-xs"></i>
-                        </a>
-                        <a href="{{ route('catalogue') }}" class="btn-corporate-outline !bg-transparent !text-white !border-slate-600 hover:!bg-slate-800">
-                            <i class="fa-solid fa-file-pdf text-red-400"></i>
-                            <span>View Product Catalogue</span>
-                        </a>
+
+                    <div class="lg:col-span-4 bg-slate-800/80 rounded-xl p-6 border border-slate-700">
+                        <h4 class="font-bold text-white text-sm mb-3 border-b border-slate-700 pb-2">SINODA Core Lines</h4>
+                        <ul class="space-y-2.5 text-xs text-slate-300">
+                            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-blue-400"></i> Keratin Infused Hair Shampoos & Masks</li>
+                            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-blue-400"></i> High-Hold Matte & Pomade Hair Waxes</li>
+                            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-blue-400"></i> Natural Aloe Vera & Tea Tree Skin Gels</li>
+                            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-blue-400"></i> Salon Professional Straightening Creams</li>
+                            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-blue-400"></i> Beard & Mustache Conditioning Oils</li>
+                        </ul>
                     </div>
-                </div>
 
-                <div class="lg:col-span-4 bg-slate-800/80 rounded-xl p-6 border border-slate-700">
-                    <h4 class="font-bold text-white text-sm mb-3 border-b border-slate-700 pb-2">SINODA Core Lines</h4>
-                    <ul class="space-y-2.5 text-xs text-slate-300">
-                        <li class="flex items-center gap-2"><i class="fa-solid fa-check text-blue-400"></i> Keratin Infused Hair Shampoos & Masks</li>
-                        <li class="flex items-center gap-2"><i class="fa-solid fa-check text-blue-400"></i> High-Hold Matte & Pomade Hair Waxes</li>
-                        <li class="flex items-center gap-2"><i class="fa-solid fa-check text-blue-400"></i> Natural Aloe Vera & Tea Tree Skin Gels</li>
-                        <li class="flex items-center gap-2"><i class="fa-solid fa-check text-blue-400"></i> Salon Professional Straightening Creams</li>
-                        <li class="flex items-center gap-2"><i class="fa-solid fa-check text-blue-400"></i> Beard & Mustache Conditioning Oils</li>
-                    </ul>
                 </div>
-
             </div>
-        </div>
-    </section>
+        </section>
+    @endif
 
 
 

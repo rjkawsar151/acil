@@ -38,7 +38,18 @@ class AdminHomepageController extends Controller
         $validated['is_enabled'] = $request->boolean('is_enabled');
 
         if ($request->hasFile('image')) {
-            $validated['image'] = $request->file('image')->store('homepage', 'public');
+            $path = $request->file('image')->store('homepage', 'public');
+            $validated['image'] = $path;
+            
+            $source = storage_path('app/public/' . $path);
+            $target = public_path('storage/' . $path);
+            $targetDir = dirname($target);
+            if (!file_exists($targetDir)) {
+                @mkdir($targetDir, 0755, true);
+            }
+            if (file_exists($source) && !is_link($target)) {
+                @copy($source, $target);
+            }
         }
 
         $homepage->update($validated);

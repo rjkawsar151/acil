@@ -21,7 +21,15 @@ use App\Http\Controllers\Admin\AdminSeoController;
 use App\Http\Controllers\Admin\AdminSettingController;
 use App\Http\Controllers\Admin\AdminSocialLinkController;
 use App\Http\Controllers\Admin\AdminUserController;
+use App\Http\Controllers\Admin\Career\AdminCareerApplicationController;
+use App\Http\Controllers\Admin\Career\AdminCareerBulkApplicationController;
+use App\Http\Controllers\Admin\Career\AdminCareerBulkEmailController;
+use App\Http\Controllers\Admin\Career\AdminCareerCvController;
+use App\Http\Controllers\Admin\Career\AdminCareerDepartmentController;
+use App\Http\Controllers\Admin\Career\AdminCareerJobController;
 use App\Http\Controllers\BlogController;
+use App\Http\Controllers\CareerApplicationController;
+use App\Http\Controllers\CareerController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PageController;
@@ -57,6 +65,12 @@ Route::post('/contact', [ContactController::class, 'submitContact'])->name('cont
 Route::get('/inquiry', [ContactController::class, 'inquiryPage'])->name('inquiry.index');
 Route::post('/inquiry', [ContactController::class, 'submitInquiry'])->name('inquiry.submit');
 Route::get('/search', [SearchController::class, 'index'])->name('search');
+
+// Careers & Recruitment Public Routes
+Route::get('/careers', [CareerController::class, 'index'])->name('careers.index');
+Route::get('/careers/success/{reference}', [CareerController::class, 'success'])->name('careers.success');
+Route::get('/careers/{slug}', [CareerController::class, 'show'])->name('careers.show');
+Route::post('/careers/{slug}/apply', [CareerApplicationController::class, 'store'])->name('careers.apply');
 
 Route::get('/sitemap.xml', [SitemapController::class, 'sitemap'])->name('sitemap');
 Route::get('/page/{slug}', [PageController::class, 'show'])->name('pages.show');
@@ -130,12 +144,12 @@ Route::prefix('admin')->name('admin.')->group(function () {
         // Messages & Inquiries
         Route::get('/messages', [AdminContactMessageController::class, 'index'])->name('messages.index');
         Route::get('/messages/{contactMessage}', [AdminContactMessageController::class, 'show'])->name('messages.show');
-        Route::put('/messages/{contactMessage}/status', [AdminContactMessageController::class, 'updateStatus'])->name('messages.update-status');
+        Route::match(['put', 'patch'], '/messages/{contactMessage}/status', [AdminContactMessageController::class, 'updateStatus'])->name('messages.status');
         Route::delete('/messages/{contactMessage}', [AdminContactMessageController::class, 'destroy'])->name('messages.destroy');
 
         Route::get('/inquiries', [AdminProductInquiryController::class, 'index'])->name('inquiries.index');
         Route::get('/inquiries/{productInquiry}', [AdminProductInquiryController::class, 'show'])->name('inquiries.show');
-        Route::put('/inquiries/{productInquiry}/status', [AdminProductInquiryController::class, 'updateStatus'])->name('inquiries.update-status');
+        Route::match(['put', 'patch'], '/inquiries/{productInquiry}/status', [AdminProductInquiryController::class, 'updateStatus'])->name('inquiries.status');
         Route::delete('/inquiries/{productInquiry}', [AdminProductInquiryController::class, 'destroy'])->name('inquiries.destroy');
 
         // Media Library
@@ -162,6 +176,27 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/seo', [AdminSeoController::class, 'index'])->name('seo.index');
         Route::get('/seo/{seo}/edit', [AdminSeoController::class, 'edit'])->name('seo.edit');
         Route::put('/seo/{seo}', [AdminSeoController::class, 'update'])->name('seo.update');
+
+        // Career & Recruitment Module
+        Route::prefix('careers')->name('careers.')->group(function () {
+            Route::post('jobs/{job}/toggle-status', [AdminCareerJobController::class, 'toggleStatus'])->name('jobs.toggle-status');
+            Route::post('jobs/{job}/duplicate', [AdminCareerJobController::class, 'duplicate'])->name('jobs.duplicate');
+            Route::resource('jobs', AdminCareerJobController::class);
+            Route::resource('departments', AdminCareerDepartmentController::class)->except(['create', 'show', 'edit']);
+
+            Route::get('applications', [AdminCareerApplicationController::class, 'index'])->name('applications.index');
+            Route::post('applications/bulk-status', [AdminCareerBulkApplicationController::class, 'status'])->name('applications.bulk-status');
+            Route::delete('applications/bulk-delete', [AdminCareerBulkApplicationController::class, 'destroy'])->name('applications.bulk-delete');
+            Route::post('applications/bulk-email', [AdminCareerBulkEmailController::class, 'send'])->name('applications.bulk-email');
+
+            Route::get('applications/{application}', [AdminCareerApplicationController::class, 'show'])->name('applications.show');
+            Route::patch('applications/{application}/status', [AdminCareerApplicationController::class, 'updateStatus'])->name('applications.status');
+            Route::put('applications/{application}/notes', [AdminCareerApplicationController::class, 'updateNotes'])->name('applications.notes');
+            Route::delete('applications/{application}', [AdminCareerApplicationController::class, 'destroy'])->name('applications.destroy');
+
+            Route::get('applications/{application}/cv/preview', [AdminCareerCvController::class, 'preview'])->name('applications.cv.preview');
+            Route::get('applications/{application}/cv/download', [AdminCareerCvController::class, 'download'])->name('applications.cv.download');
+        });
 
         // User Management
         Route::resource('users', AdminUserController::class);

@@ -49,7 +49,18 @@ class AdminHeroSlideController extends Controller
         $validated['is_active'] = $request->boolean('is_active', true);
 
         if ($request->hasFile('image')) {
-            $validated['image'] = $request->file('image')->store('hero_slides', 'public');
+            $path = $request->file('image')->store('hero_slides', 'public');
+            $validated['image'] = $path;
+            
+            $source = storage_path('app/public/' . $path);
+            $target = public_path('storage/' . $path);
+            $targetDir = dirname($target);
+            if (!file_exists($targetDir)) {
+                @mkdir($targetDir, 0755, true);
+            }
+            if (file_exists($source) && !is_link($target)) {
+                @copy($source, $target);
+            }
         } elseif ($request->filled('image_url')) {
             $validated['image'] = $request->input('image_url');
         }
@@ -98,7 +109,18 @@ class AdminHeroSlideController extends Controller
             if ($heroSlide->image && !str_starts_with($heroSlide->image, 'http')) {
                 Storage::disk('public')->delete($heroSlide->image);
             }
-            $validated['image'] = $request->file('image')->store('hero_slides', 'public');
+            $path = $request->file('image')->store('hero_slides', 'public');
+            $validated['image'] = $path;
+            
+            $source = storage_path('app/public/' . $path);
+            $target = public_path('storage/' . $path);
+            $targetDir = dirname($target);
+            if (!file_exists($targetDir)) {
+                @mkdir($targetDir, 0755, true);
+            }
+            if (file_exists($source) && !is_link($target)) {
+                @copy($source, $target);
+            }
         } elseif ($request->filled('image_url')) {
             $validated['image'] = $request->input('image_url');
         }

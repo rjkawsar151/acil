@@ -130,27 +130,42 @@
             <div class="flex items-center gap-5">
                 <span class="flex items-center gap-1.5 text-slate-300">
                     <i class="fa-solid fa-industry text-blue-400"></i>
-                    <span>Plant: <strong>Genda, Karnapara, Savar, Dhaka</strong></span>
+                    <span>{{ \App\Models\Setting::get('topbar_plant_text', 'Plant: Genda, Karnapara, Savar, Dhaka') }}</span>
                 </span>
                 <span class="text-slate-600">|</span>
                 <span class="flex items-center gap-1.5 text-slate-300">
                     <i class="fa-solid fa-building text-cyan-400"></i>
-                    <span>A Concern of <strong>Adonis Group</strong></span>
+                    <span>{{ \App\Models\Setting::get('topbar_concern_text', 'A Concern of Adonis Group') }}</span>
                 </span>
             </div>
             <div class="flex items-center gap-5">
-                <a href="tel:{{ \App\Models\Setting::get('primary_phone', '+880 2 7748891-4') }}" class="flex items-center gap-1.5 hover:text-white transition">
+                @php
+                    $topPhone = \App\Models\Setting::get('primary_phone', '+880 2 7748891-4');
+                    $topEmail = \App\Models\Setting::get('contact_email', \App\Models\Setting::get('primary_email', 'info@adonischemical.com'));
+                    $topSocialLinks = \App\Models\SocialLink::active()->get();
+                @endphp
+                <a href="tel:{{ $topPhone }}" class="flex items-center gap-1.5 hover:text-white transition">
                     <i class="fa-solid fa-phone text-blue-400"></i>
-                    <span>{{ \App\Models\Setting::get('primary_phone', '+880 2 7748891-4') }}</span>
+                    <span>{{ $topPhone }}</span>
                 </a>
-                <a href="mailto:{{ \App\Models\Setting::get('contact_email', 'info@adonischemical.com') }}" class="flex items-center gap-1.5 hover:text-white transition">
+                <a href="mailto:{{ $topEmail }}" class="flex items-center gap-1.5 hover:text-white transition">
                     <i class="fa-solid fa-envelope text-blue-400"></i>
-                    <span>{{ \App\Models\Setting::get('contact_email', 'info@adonischemical.com') }}</span>
+                    <span>{{ $topEmail }}</span>
                 </a>
-                <div class="flex items-center gap-2.5 pl-3 border-l border-slate-700">
-                    <a href="https://facebook.com" target="_blank" class="hover:text-blue-400 transition"><i class="fa-brands fa-facebook-f"></i></a>
-                    <a href="https://linkedin.com" target="_blank" class="hover:text-blue-400 transition"><i class="fa-brands fa-linkedin-in"></i></a>
-                </div>
+                @if($topSocialLinks->count() > 0)
+                    <div class="flex items-center gap-2.5 pl-3 border-l border-slate-700">
+                        @foreach($topSocialLinks as $soc)
+                            <a href="{{ $soc->url }}" target="_blank" rel="noopener noreferrer" class="hover:text-blue-400 transition" title="{{ $soc->platform }}">
+                                <i class="{{ $soc->icon ?: 'fa-brands fa-' . strtolower($soc->platform) }}"></i>
+                            </a>
+                        @endforeach
+                    </div>
+                @else
+                    <div class="flex items-center gap-2.5 pl-3 border-l border-slate-700">
+                        <a href="https://facebook.com" target="_blank" class="hover:text-blue-400 transition"><i class="fa-brands fa-facebook-f"></i></a>
+                        <a href="https://linkedin.com" target="_blank" class="hover:text-blue-400 transition"><i class="fa-brands fa-linkedin-in"></i></a>
+                    </div>
+                @endif
             </div>
         </div>
     </div>
@@ -229,6 +244,7 @@
                         <a href="{{ route('catalogue') }}" class="px-3 py-2 rounded-lg text-slate-700 hover:text-blue-700 flex items-center gap-1"><i class="fa-solid fa-file-pdf text-red-600 text-xs mr-1"></i> Catalogue</a>
                         <a href="{{ route('manufacturing') }}" class="px-3 py-2 rounded-lg text-slate-700 hover:text-blue-700">Manufacturing</a>
                         <a href="{{ route('quality') }}" class="px-3 py-2 rounded-lg text-slate-700 hover:text-blue-700">Quality Assurance</a>
+                        <a href="{{ route('careers.index') }}" class="px-3 py-2 rounded-lg {{ Request::is('careers*') ? 'text-blue-700 font-bold' : 'text-slate-700 hover:text-blue-700' }}">Career</a>
                         <a href="{{ route('news.index') }}" class="px-3 py-2 rounded-lg text-slate-700 hover:text-blue-700">News</a>
                         <a href="{{ route('contact') }}" class="px-3 py-2 rounded-lg text-slate-700 hover:text-blue-700">Contact</a>
                     @endforelse
@@ -326,6 +342,7 @@
                     </a>
                     <a href="{{ route('manufacturing') }}" class="px-4 py-3 rounded-xl hover:bg-slate-800 text-slate-200">Manufacturing Facility</a>
                     <a href="{{ route('quality') }}" class="px-4 py-3 rounded-xl hover:bg-slate-800 text-slate-200">Quality Assurance</a>
+                    <a href="{{ route('careers.index') }}" class="px-4 py-3 rounded-xl hover:bg-slate-800 text-slate-200">Career & Jobs</a>
                     <a href="{{ route('news.index') }}" class="px-4 py-3 rounded-xl hover:bg-slate-800 text-slate-200">News & Articles</a>
                     <a href="{{ route('contact') }}" class="px-4 py-3 rounded-xl hover:bg-slate-800 text-slate-200">Contact Us</a>
                 @endforelse
@@ -436,18 +453,23 @@
                         {{ \App\Models\Setting::get('footer_about', 'Adonis Chemical Limited is a leading chemical and personal care manufacturing enterprise committed to scientific formulation, state-of-the-art laboratory standards, and top-tier product quality for salons and consumers under the SINODA brand.') }}
                     </p>
                     <div class="pt-2 flex items-center gap-3">
-                        <a href="https://facebook.com" target="_blank" class="w-9 h-9 rounded-lg bg-slate-800 hover:bg-brand-blue text-slate-300 hover:text-white flex items-center justify-center transition">
-                            <i class="fa-brands fa-facebook-f text-sm"></i>
-                        </a>
-                        <a href="https://linkedin.com" target="_blank" class="w-9 h-9 rounded-lg bg-slate-800 hover:bg-brand-scientific text-slate-300 hover:text-white flex items-center justify-center transition">
-                            <i class="fa-brands fa-linkedin-in text-sm"></i>
-                        </a>
-                        <a href="https://instagram.com" target="_blank" class="w-9 h-9 rounded-lg bg-slate-800 hover:bg-pink-600 text-slate-300 hover:text-white flex items-center justify-center transition">
-                            <i class="fa-brands fa-instagram text-sm"></i>
-                        </a>
-                        <a href="https://youtube.com" target="_blank" class="w-9 h-9 rounded-lg bg-slate-800 hover:bg-red-600 text-slate-300 hover:text-white flex items-center justify-center transition">
-                            <i class="fa-brands fa-youtube text-sm"></i>
-                        </a>
+                        @if($topSocialLinks->count() > 0)
+                            @foreach($topSocialLinks as $soc)
+                                <a href="{{ $soc->url }}" target="_blank" rel="noopener noreferrer" class="w-9 h-9 rounded-lg bg-slate-800 hover:bg-brand-blue text-slate-300 hover:text-white flex items-center justify-center transition" title="{{ $soc->platform }}">
+                                    <i class="{{ $soc->icon ?: 'fa-brands fa-' . strtolower($soc->platform) }} text-sm"></i>
+                                </a>
+                            @endforeach
+                        @else
+                            <a href="https://facebook.com" target="_blank" class="w-9 h-9 rounded-lg bg-slate-800 hover:bg-brand-blue text-slate-300 hover:text-white flex items-center justify-center transition">
+                                <i class="fa-brands fa-facebook-f text-sm"></i>
+                            </a>
+                            <a href="https://linkedin.com" target="_blank" class="w-9 h-9 rounded-lg bg-slate-800 hover:bg-brand-scientific text-slate-300 hover:text-white flex items-center justify-center transition">
+                                <i class="fa-brands fa-linkedin-in text-sm"></i>
+                            </a>
+                            <a href="https://instagram.com" target="_blank" class="w-9 h-9 rounded-lg bg-slate-800 hover:bg-pink-600 text-slate-300 hover:text-white flex items-center justify-center transition">
+                                <i class="fa-brands fa-instagram text-sm"></i>
+                            </a>
+                        @endif
                     </div>
                 </div>
 
@@ -457,6 +479,7 @@
                     <ul class="space-y-2.5 text-sm">
                         <li><a href="{{ route('about') }}" class="hover:text-brand-cyan transition">About Adonis Chemical</a></li>
                         <li><a href="{{ route('adonis-group') }}" class="hover:text-brand-cyan transition">Adonis Group Ecosystem</a></li>
+                        <li><a href="{{ route('careers.index') }}" class="hover:text-brand-cyan transition font-semibold text-brand-cyan flex items-center gap-1.5"><i class="fa-solid fa-briefcase text-xs"></i> Careers & Openings</a></li>
                         <li><a href="{{ route('manufacturing') }}" class="hover:text-brand-cyan transition">Savar Manufacturing Plant</a></li>
                         <li><a href="{{ route('quality') }}" class="hover:text-brand-cyan transition">Quality Assurance Lab</a></li>
                         <li><a href="{{ route('rd') }}" class="hover:text-brand-cyan transition">Research & Development</a></li>

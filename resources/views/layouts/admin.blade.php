@@ -158,6 +158,33 @@
                         <span>Media Library</span>
                     </a>
 
+                    <!-- Section: Career & Recruitment -->
+                    <div class="pt-4 pb-1.5 px-3.5 text-[10px] font-extrabold uppercase tracking-widest text-slate-500">
+                        Career & Recruitment
+                    </div>
+
+                    @php
+                        $pendingApplications = \App\Models\CareerApplication::where('status', 'pending')->count();
+                    @endphp
+
+                    <a href="{{ route('admin.careers.jobs.index') }}" class="flex items-center justify-between px-3.5 py-2.5 rounded-xl font-medium transition {{ Request::is('admin/careers/jobs*') || Request::is('admin/careers/departments*') ? 'bg-brand-blue text-white shadow-lg shadow-blue-600/30' : 'text-slate-300 hover:bg-slate-800/80 hover:text-white' }}">
+                        <div class="flex items-center gap-3">
+                            <i class="fa-solid fa-briefcase w-5 text-center text-purple-400"></i>
+                            <span>Job Posts</span>
+                        </div>
+                        <span class="text-xs px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 font-bold">{{ \App\Models\CareerJob::count() }}</span>
+                    </a>
+
+                    <a href="{{ route('admin.careers.applications.index') }}" class="flex items-center justify-between px-3.5 py-2.5 rounded-xl font-medium transition {{ Request::is('admin/careers/applications*') ? 'bg-brand-blue text-white shadow-lg shadow-blue-600/30' : 'text-slate-300 hover:bg-slate-800/80 hover:text-white' }}">
+                        <div class="flex items-center gap-3">
+                            <i class="fa-solid fa-user-tie w-5 text-center text-teal-400"></i>
+                            <span>Applications</span>
+                        </div>
+                        @if($pendingApplications > 0)
+                            <span class="text-xs px-2 py-0.5 rounded-full bg-amber-500 text-slate-900 font-extrabold">{{ $pendingApplications }}</span>
+                        @endif
+                    </a>
+
                     <!-- Section: Communications -->
                     <div class="pt-4 pb-1.5 px-3.5 text-[10px] font-extrabold uppercase tracking-widest text-slate-500">
                         Communications
@@ -196,6 +223,11 @@
                     <a href="{{ route('admin.navigation.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-medium transition {{ Request::is('admin/navigation*') ? 'bg-brand-blue text-white shadow-lg shadow-blue-600/30' : 'text-slate-300 hover:bg-slate-800/80 hover:text-white' }}">
                         <i class="fa-solid fa-compass w-5 text-center text-slate-400"></i>
                         <span>Menus & Links</span>
+                    </a>
+
+                    <a href="{{ route('admin.social-links.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-medium transition {{ Request::is('admin/social-links*') ? 'bg-brand-blue text-white shadow-lg shadow-blue-600/30' : 'text-slate-300 hover:bg-slate-800/80 hover:text-white' }}">
+                        <i class="fa-solid fa-share-nodes w-5 text-center text-slate-400"></i>
+                        <span>Social Media Links</span>
                     </a>
 
                     <a href="{{ route('admin.seo.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-medium transition {{ Request::is('admin/seo*') ? 'bg-brand-blue text-white shadow-lg shadow-blue-600/30' : 'text-slate-300 hover:bg-slate-800/80 hover:text-white' }}">
