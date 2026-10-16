@@ -93,11 +93,19 @@
                     <option value="this_month" {{ $dateFilter === 'this_month' ? 'selected' : '' }}>This Month</option>
                 </select>
 
+                <!-- Per Page Selector -->
+                <select name="per_page" onchange="this.form.submit()" class="px-3 py-2 text-xs rounded-xl border border-slate-200 focus:border-brand-blue outline-none bg-white text-slate-700" title="Records per page">
+                    <option value="20" {{ ($perPage ?? 20) == 20 ? 'selected' : '' }}>20 / page</option>
+                    <option value="50" {{ ($perPage ?? 20) == 50 ? 'selected' : '' }}>50 / page</option>
+                    <option value="100" {{ ($perPage ?? 20) == 100 ? 'selected' : '' }}>100 / page</option>
+                    <option value="all" {{ ($perPage ?? 20) === 'all' || ($perPage ?? 20) == 1000 ? 'selected' : '' }}>Show All</option>
+                </select>
+
                 <button type="submit" class="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition">
                     <i class="fa-solid fa-filter mr-1"></i> Filter
                 </button>
 
-                @if($search || ($jobId && $jobId !== 'all') || ($status && $status !== 'all') || $dateFilter)
+                @if($search || ($jobId && $jobId !== 'all') || ($status && $status !== 'all') || $dateFilter || ($perPage && $perPage != 20))
                     <a href="{{ route('admin.careers.applications.index') }}" class="p-2 text-slate-400 hover:text-slate-600 transition" title="Clear Filters">
                         <i class="fa-solid fa-rotate-left"></i>
                     </a>
@@ -322,6 +330,20 @@
 
     <!-- Candidate Applications Table -->
     <div class="bg-white rounded-3xl border border-slate-200/80 shadow-sm overflow-hidden">
+        
+        <!-- Cross-Page Selection Notification Banner -->
+        <div id="selection-scope-banner" class="hidden bg-gradient-to-r from-blue-50 via-indigo-50 to-blue-50 border-b border-blue-200/80 px-6 py-2.5 text-xs text-blue-950 items-center justify-between gap-2 transition-all">
+            <div class="flex items-center gap-2 font-medium">
+                <i class="fa-solid fa-circle-check text-brand-blue text-sm"></i>
+                <span id="selection-scope-text">
+                    All <strong>{{ $allMatchingApplicants->count() }}</strong> applications matching this filter are selected.
+                </span>
+            </div>
+            <button type="button" id="toggle-selection-scope-btn" class="text-xs font-bold text-brand-blue hover:text-navy underline self-start sm:self-auto cursor-pointer">
+                Select only the {{ $applications->count() }} on this page
+            </button>
+        </div>
+
         <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse text-xs">
                 <thead>
@@ -641,6 +663,7 @@ Adonis Chemical Industries Ltd.</textarea>
 @push('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        const allMatchingApps = @json($allMatchingApplicants);
         const selectAll = document.getElementById('select-all-checkbox');
         const rowCheckboxes = document.querySelectorAll('.app-checkbox');
         const bulkBar = document.getElementById('bulk-actions-bar');
@@ -651,38 +674,95 @@ Adonis Chemical Industries Ltd.</textarea>
         const bulkXlsHidden = document.getElementById('bulk-xls-hidden-inputs');
         const bulkCvCountLabel = document.getElementById('bulk-cv-count');
 
-        function getSelectedApps() {
-            const selected = [];
+        const scopeBanner = document.getElementById('selection-scope-banner');
+        const scopeText = document.getElementById('selection-scope-text');
+        const toggleScopeBtn = document.getElementById('toggle-selection-scope-btn');
+
+        // State: Map of selected ID => applicant object {id, name, email, position}
+        const selectedMap = new Map();
+        let selectionMode = 'none'; // 'all_matching' | 'page_only' | 'custom'
+
+        function getPageApps() {
+            const pageApps = [];
             rowCheckboxes.forEach(cb => {
-                if (cb.checked) {
-                    const row = cb.closest('tr');
-                    selected.push({
-                        id: cb.value,
-                        name: row.dataset.name,
-                        email: row.dataset.email,
-                        position: row.dataset.position
-                    });
-                }
+                const row = cb.closest('tr');
+                pageApps.push({
+                    id: parseInt(cb.value),
+                    name: row.dataset.name,
+                    email: row.dataset.email,
+                    position: row.dataset.position
+                });
             });
-            return selected;
+            return pageApps;
         }
 
-        function updateBulkBar() {
-            const selected = getSelectedApps();
-            selectedCountLabel.textContent = selected.length;
+        function syncCheckboxesFromMap() {
+            rowCheckboxes.forEach(cb => {
+                cb.checked = selectedMap.has(parseInt(cb.value)) || selectedMap.has(String(cb.value));
+            });
+
+            if (selectedMap.size === 0) {
+                selectAll.checked = false;
+                selectAll.indeterminate = false;
+            } else if (selectedMap.size >= allMatchingApps.length && allMatchingApps.length > 0) {
+                selectAll.checked = true;
+                selectAll.indeterminate = false;
+            } else {
+                // Some items selected
+                const allPageChecked = Array.from(rowCheckboxes).length > 0 && Array.from(rowCheckboxes).every(cb => cb.checked);
+                if (allPageChecked) {
+                    selectAll.checked = true;
+                    selectAll.indeterminate = false;
+                } else {
+                    selectAll.checked = false;
+                    selectAll.indeterminate = true;
+                }
+            }
+        }
+
+        function updateUI() {
+            const count = selectedMap.size;
+            selectedCountLabel.textContent = count;
             if (bulkCvCountLabel) {
-                bulkCvCountLabel.textContent = selected.length;
+                bulkCvCountLabel.textContent = count;
             }
 
-            if (selected.length > 0) {
+            if (count > 0) {
                 bulkBar.classList.remove('hidden');
                 bulkBar.classList.add('flex');
 
-                const hiddenInputsHtml = selected.map(s => `<input type="hidden" name="ids[]" value="${s.id}">`).join('');
-                bulkStatusHidden.innerHTML = hiddenInputsHtml;
-                bulkDeleteHidden.innerHTML = hiddenInputsHtml;
-                if (bulkCvHidden) bulkCvHidden.innerHTML = hiddenInputsHtml;
-                if (bulkXlsHidden) bulkXlsHidden.innerHTML = hiddenInputsHtml;
+                const ids = Array.from(selectedMap.keys());
+                const idsArrayHtml = ids.map(id => `<input type="hidden" name="ids[]" value="${id}">`).join('');
+                const idsCsvHtml = `<input type="hidden" name="ids" value="${ids.join(',')}">`;
+                const combinedHtml = idsArrayHtml + idsCsvHtml;
+
+                bulkStatusHidden.innerHTML = combinedHtml;
+                bulkDeleteHidden.innerHTML = combinedHtml;
+                if (bulkCvHidden) bulkCvHidden.innerHTML = combinedHtml;
+                if (bulkXlsHidden) bulkXlsHidden.innerHTML = combinedHtml;
+
+                // Handle cross-page banner visibility
+                if (selectionMode === 'all_matching' && allMatchingApps.length > rowCheckboxes.length) {
+                    if (scopeBanner) {
+                        scopeBanner.classList.remove('hidden');
+                        scopeBanner.classList.add('flex');
+                        scopeText.innerHTML = `All <strong>${allMatchingApps.length}</strong> applications matching current filter are selected across all pages.`;
+                        toggleScopeBtn.textContent = `Select only the ${rowCheckboxes.length} on this page`;
+                    }
+                } else if (selectionMode === 'page_only' && allMatchingApps.length > rowCheckboxes.length) {
+                    if (scopeBanner) {
+                        scopeBanner.classList.remove('hidden');
+                        scopeBanner.classList.add('flex');
+                        scopeText.innerHTML = `Only <strong>${rowCheckboxes.length}</strong> applications on this page are selected.`;
+                        toggleScopeBtn.textContent = `Select all ${allMatchingApps.length} applications matching this filter`;
+                    }
+                } else {
+                    if (scopeBanner) {
+                        scopeBanner.classList.remove('flex');
+                        scopeBanner.classList.add('hidden');
+                    }
+                }
+
             } else {
                 bulkBar.classList.remove('flex');
                 bulkBar.classList.add('hidden');
@@ -690,22 +770,77 @@ Adonis Chemical Industries Ltd.</textarea>
                 bulkDeleteHidden.innerHTML = '';
                 if (bulkCvHidden) bulkCvHidden.innerHTML = '';
                 if (bulkXlsHidden) bulkXlsHidden.innerHTML = '';
+                if (scopeBanner) {
+                    scopeBanner.classList.remove('flex');
+                    scopeBanner.classList.add('hidden');
+                }
             }
         }
 
+        // When Master Select-All Checkbox is clicked
         if (selectAll) {
             selectAll.addEventListener('change', function() {
-                rowCheckboxes.forEach(cb => cb.checked = this.checked);
-                updateBulkBar();
+                if (this.checked) {
+                    // USER REQUIREMENT: "when i click on select all it shold select all of them 63 or more not only showing 20 only"
+                    selectedMap.clear();
+                    allMatchingApps.forEach(app => {
+                        selectedMap.set(parseInt(app.id), app);
+                    });
+                    selectionMode = 'all_matching';
+                    syncCheckboxesFromMap();
+                    updateUI();
+                } else {
+                    selectedMap.clear();
+                    selectionMode = 'none';
+                    syncCheckboxesFromMap();
+                    updateUI();
+                }
             });
         }
 
+        // When Toggle Scope Button is clicked
+        if (toggleScopeBtn) {
+            toggleScopeBtn.addEventListener('click', function() {
+                if (selectionMode === 'all_matching') {
+                    // Switch to page only
+                    selectedMap.clear();
+                    getPageApps().forEach(app => {
+                        selectedMap.set(parseInt(app.id), app);
+                    });
+                    selectionMode = 'page_only';
+                    syncCheckboxesFromMap();
+                    updateUI();
+                } else {
+                    // Switch back to all matching
+                    selectedMap.clear();
+                    allMatchingApps.forEach(app => {
+                        selectedMap.set(parseInt(app.id), app);
+                    });
+                    selectionMode = 'all_matching';
+                    syncCheckboxesFromMap();
+                    updateUI();
+                }
+            });
+        }
+
+        // Individual Row Checkboxes
         rowCheckboxes.forEach(cb => {
             cb.addEventListener('change', function() {
-                updateBulkBar();
-                if (!this.checked && selectAll) {
-                    selectAll.checked = false;
+                const id = parseInt(this.value);
+                const row = this.closest('tr');
+                if (this.checked) {
+                    selectedMap.set(id, {
+                        id: id,
+                        name: row.dataset.name,
+                        email: row.dataset.email,
+                        position: row.dataset.position
+                    });
+                } else {
+                    selectedMap.delete(id);
                 }
+                selectionMode = 'custom';
+                syncCheckboxesFromMap();
+                updateUI();
             });
         });
 
@@ -713,7 +848,7 @@ Adonis Chemical Industries Ltd.</textarea>
         const openBulkEmailBtn = document.getElementById('open-bulk-email-modal-btn');
         if (openBulkEmailBtn) {
             openBulkEmailBtn.addEventListener('click', function() {
-                const selected = getSelectedApps();
+                const selected = Array.from(selectedMap.values());
                 if (selected.length === 0) {
                     alert('Please select at least one applicant.');
                     return;
@@ -772,14 +907,32 @@ Adonis Chemical Industries Ltd.</textarea>
         const hiddenInputs = document.getElementById('email-modal-hidden-inputs');
 
         countLabel.textContent = apps.length;
-        chipsContainer.innerHTML = apps.map(a => `
+        
+        // Render chips up to 40, then show summary count
+        const maxDisplayChips = 40;
+        const visibleApps = apps.slice(0, maxDisplayChips);
+        const remainingCount = apps.length - visibleApps.length;
+
+        let chipsHtml = visibleApps.map(a => `
             <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-blue-100 text-blue-800 text-xs font-medium">
                 <i class="fa-solid fa-user text-[10px]"></i>
                 <strong>${a.name}</strong> (${a.email})
             </span>
         `).join('');
 
-        hiddenInputs.innerHTML = apps.map(a => `<input type="hidden" name="application_ids[]" value="${a.id}">`).join('');
+        if (remainingCount > 0) {
+            chipsHtml += `
+                <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-200 text-slate-700 text-xs font-bold">
+                    +${remainingCount} more applicants
+                </span>
+            `;
+        }
+
+        chipsContainer.innerHTML = chipsHtml;
+
+        const idsArray = apps.map(a => a.id);
+        hiddenInputs.innerHTML = idsArray.map(id => `<input type="hidden" name="application_ids[]" value="${id}">`).join('')
+            + `<input type="hidden" name="application_ids" value="${idsArray.join(',')}">`;
 
         modal.classList.remove('hidden');
         modal.classList.add('flex');

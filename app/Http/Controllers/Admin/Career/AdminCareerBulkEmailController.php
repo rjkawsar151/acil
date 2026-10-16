@@ -14,6 +14,10 @@ class AdminCareerBulkEmailController extends Controller
      */
     public function send(Request $request, CareerEmailService $emailService)
     {
+        if (is_string($request->input('application_ids'))) {
+            $request->merge(['application_ids' => array_filter(array_map('intval', explode(',', $request->input('application_ids'))))]);
+        }
+
         $validated = $request->validate([
             'application_ids' => 'required|array|min:1',
             'application_ids.*' => 'required|integer|exists:career_applications,id',

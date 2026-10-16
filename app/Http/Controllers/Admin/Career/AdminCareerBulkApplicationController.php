@@ -15,6 +15,10 @@ class AdminCareerBulkApplicationController extends Controller
      */
     public function status(Request $request)
     {
+        if (is_string($request->input('ids'))) {
+            $request->merge(['ids' => array_filter(array_map('intval', explode(',', $request->input('ids'))))]);
+        }
+
         $validated = $request->validate([
             'ids' => 'required|array|min:1',
             'ids.*' => 'required|integer|exists:career_applications,id',
@@ -67,6 +71,10 @@ class AdminCareerBulkApplicationController extends Controller
      */
     public function destroy(Request $request)
     {
+        if (is_string($request->input('ids'))) {
+            $request->merge(['ids' => array_filter(array_map('intval', explode(',', $request->input('ids'))))]);
+        }
+
         $validated = $request->validate([
             'ids' => 'required|array|min:1',
             'ids.*' => 'required|integer|exists:career_applications,id',

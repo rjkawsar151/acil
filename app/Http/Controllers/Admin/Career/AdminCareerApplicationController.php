@@ -48,7 +48,23 @@ class AdminCareerApplicationController extends Controller
             };
         }
 
-        $applications = $query->latest('applied_at')->paginate(20)->withQueryString();
+        $perPage = $request->query('per_page', 20);
+        $perPageInt = ($perPage === 'all' || $perPage == -1) ? 1000 : max(10, min(200, (int)$perPage));
+
+        // Get lightweight list of all matching applicants for bulk selection across all pages
+        $allMatchingApplicants = (clone $query)
+            ->select(['career_applications.id', 'career_applications.career_job_id', 'career_applications.name', 'career_applications.email'])
+            ->with('job:id,title')
+            ->latest('career_applications.applied_at')
+            ->get()
+            ->map(fn($a) => [
+                'id' => $a->id,
+                'name' => $a->name,
+                'email' => $a->email,
+                'position' => $a->job->title ?? 'Position',
+            ]);
+
+        $applications = $query->latest('applied_at')->paginate($perPageInt)->withQueryString();
         $jobs = CareerJob::orderBy('title')->get();
 
         // Metrics Summary
@@ -70,6 +86,8 @@ class AdminCareerApplicationController extends Controller
             'jobId',
             'status',
             'dateFilter',
+            'perPage',
+            'allMatchingApplicants',
             'stats'
         ));
     }
