@@ -26,6 +26,7 @@ use App\Http\Controllers\Admin\Career\AdminCareerBulkApplicationController;
 use App\Http\Controllers\Admin\Career\AdminCareerBulkEmailController;
 use App\Http\Controllers\Admin\Career\AdminCareerCvController;
 use App\Http\Controllers\Admin\Career\AdminCareerDepartmentController;
+use App\Http\Controllers\Admin\Career\AdminCareerExportController;
 use App\Http\Controllers\Admin\Career\AdminCareerJobController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\CareerApplicationController;
@@ -196,6 +197,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
             Route::get('applications/{application}/cv/preview', [AdminCareerCvController::class, 'preview'])->name('applications.cv.preview');
             Route::get('applications/{application}/cv/download', [AdminCareerCvController::class, 'download'])->name('applications.cv.download');
+
+            // Bulk & Filtered Exports (CV ZIP and A4 XLS Sheet)
+            Route::match(['get', 'post'], 'applications-export/cv-zip', [AdminCareerExportController::class, 'downloadCvZip'])->name('applications.export.cv-zip');
+            Route::match(['get', 'post'], 'applications-export/xls', [AdminCareerExportController::class, 'downloadXls'])->name('applications.export.xls');
         });
 
         // User Management

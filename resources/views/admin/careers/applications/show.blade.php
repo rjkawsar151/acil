@@ -24,6 +24,11 @@
                 <span>Download CV ({{ $application->formatted_cv_size }})</span>
             </a>
 
+            <a href="{{ route('admin.careers.applications.export.xls', ['ids' => [$application->id]]) }}" class="px-3.5 py-2.5 rounded-xl bg-white border border-slate-200 hover:bg-emerald-50 hover:border-emerald-300 text-slate-700 font-bold text-xs transition flex items-center gap-1.5 shadow-sm" title="Download Formatted A4 XLS Profile">
+                <i class="fa-solid fa-file-excel text-emerald-600"></i>
+                <span>XLS (A4)</span>
+            </a>
+
             <button type="button" onclick="openSingleEmailModal({{ $application->id }}, '{{ addslashes($application->name) }}', '{{ addslashes($application->email) }}', '{{ addslashes($application->job->title ?? 'Position') }}')" class="btn-scientific-primary text-xs !py-2.5 !px-4">
                 <i class="fa-solid fa-envelope"></i>
                 <span>Send Interview Email</span>
@@ -353,6 +358,14 @@ Please bring a printed copy of your updated CV, academic credentials, and nation
 Best regards,
 HR Recruitment Committee
 Adonis Chemical Industries Ltd.</textarea>
+                </div>
+
+                <!-- Auto update status toggle -->
+                <div>
+                    <label class="flex items-center gap-2 text-xs font-bold text-slate-700 cursor-pointer">
+                        <input type="checkbox" name="update_status" value="1" checked class="w-4 h-4 text-brand-blue rounded border-slate-300 focus:ring-brand-blue">
+                        <span>Automatically update status to "Interview Scheduled" upon dispatch</span>
+                    </label>
                 </div>
 
                 <div class="flex items-center justify-end gap-3 pt-3 border-t border-slate-100">

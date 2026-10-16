@@ -104,9 +104,147 @@
                 @endif
             </div>
 
-            <!-- Header Quick Summary -->
-            <div class="text-xs text-slate-500 font-semibold self-end lg:self-auto">
-                Showing <strong>{{ $applications->total() }}</strong> total candidate applications
+            <!-- Header Quick Summary & Export Actions -->
+            <div class="flex items-center gap-2 self-end lg:self-auto flex-wrap">
+                
+                <!-- Download CVs Dropdown -->
+                <div class="relative" x-data="{ open: false }">
+                    <button type="button" @click="open = !open" @click.outside="open = false" class="px-3.5 py-2 rounded-xl bg-slate-50 border border-slate-200 hover:border-indigo-400 hover:bg-indigo-50/50 text-slate-700 font-bold text-xs transition flex items-center gap-1.5 shadow-sm">
+                        <i class="fa-solid fa-file-zipper text-indigo-600"></i>
+                        <span>Download CVs</span>
+                        <i class="fa-solid fa-chevron-down text-[10px] text-slate-400 transition" :class="{'rotate-180': open}"></i>
+                    </button>
+
+                    <div x-show="open" x-transition.origin.top.right class="absolute right-0 mt-2 w-64 bg-white rounded-2xl shadow-xl border border-slate-100 py-2 z-30" style="display: none;">
+                        <div class="px-3.5 py-1.5 border-b border-slate-100 text-[10px] font-extrabold uppercase tracking-wider text-slate-400">
+                            Download CV Archive (ZIP)
+                        </div>
+
+                        @if($search || ($jobId && $jobId !== 'all') || ($status && $status !== 'all') || $dateFilter)
+                            <a href="{{ route('admin.careers.applications.export.cv-zip', array_merge(request()->query(), ['scope' => 'current'])) }}" class="flex items-center justify-between px-3.5 py-2 hover:bg-blue-50 text-xs font-semibold text-slate-700 transition">
+                                <span class="flex items-center gap-2">
+                                    <i class="fa-solid fa-filter text-brand-blue text-[11px]"></i>
+                                    <span>Current Filtered Set</span>
+                                </span>
+                                <span class="text-[10px] bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full font-bold">{{ $applications->total() }}</span>
+                            </a>
+                        @endif
+
+                        <a href="{{ route('admin.careers.applications.export.cv-zip', ['scope' => 'all']) }}" class="flex items-center justify-between px-3.5 py-2 hover:bg-slate-50 text-xs font-semibold text-slate-700 transition">
+                            <span class="flex items-center gap-2">
+                                <i class="fa-solid fa-boxes-stacked text-slate-500 text-[11px]"></i>
+                                <span>All Applicants</span>
+                            </span>
+                            <span class="text-[10px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full font-bold">{{ $stats['total'] }}</span>
+                        </a>
+
+                        <a href="{{ route('admin.careers.applications.export.cv-zip', ['scope' => 'shortlisted']) }}" class="flex items-center justify-between px-3.5 py-2 hover:bg-indigo-50 text-xs font-bold text-indigo-700 transition">
+                            <span class="flex items-center gap-2">
+                                <i class="fa-solid fa-star text-indigo-500 text-[11px]"></i>
+                                <span>Shortlisted Candidates</span>
+                            </span>
+                            <span class="text-[10px] bg-indigo-100 text-indigo-800 px-2 py-0.5 rounded-full font-extrabold">{{ $stats['shortlisted'] }}</span>
+                        </a>
+
+                        <a href="{{ route('admin.careers.applications.export.cv-zip', ['scope' => 'interview_scheduled']) }}" class="flex items-center justify-between px-3.5 py-2 hover:bg-purple-50 text-xs font-semibold text-slate-700 transition">
+                            <span class="flex items-center gap-2">
+                                <i class="fa-solid fa-calendar-check text-purple-600 text-[11px]"></i>
+                                <span>Interview Scheduled</span>
+                            </span>
+                            <span class="text-[10px] bg-purple-100 text-purple-800 px-2 py-0.5 rounded-full font-bold">{{ $stats['interview_scheduled'] }}</span>
+                        </a>
+
+                        <a href="{{ route('admin.careers.applications.export.cv-zip', ['scope' => 'under_review']) }}" class="flex items-center justify-between px-3.5 py-2 hover:bg-blue-50 text-xs font-semibold text-slate-700 transition">
+                            <span class="flex items-center gap-2">
+                                <i class="fa-solid fa-magnifying-glass text-blue-500 text-[11px]"></i>
+                                <span>Under Review</span>
+                            </span>
+                            <span class="text-[10px] bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full font-bold">{{ $stats['under_review'] }}</span>
+                        </a>
+
+                        <a href="{{ route('admin.careers.applications.export.cv-zip', ['scope' => 'selected']) }}" class="flex items-center justify-between px-3.5 py-2 hover:bg-emerald-50 text-xs font-semibold text-slate-700 transition">
+                            <span class="flex items-center gap-2">
+                                <i class="fa-solid fa-circle-check text-emerald-600 text-[11px]"></i>
+                                <span>Selected Candidates</span>
+                            </span>
+                            <span class="text-[10px] bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full font-bold">{{ $stats['selected'] }}</span>
+                        </a>
+
+                        <a href="{{ route('admin.careers.applications.export.cv-zip', ['scope' => 'pending']) }}" class="flex items-center justify-between px-3.5 py-2 hover:bg-amber-50 text-xs font-semibold text-slate-700 transition">
+                            <span class="flex items-center gap-2">
+                                <i class="fa-solid fa-hourglass-start text-amber-500 text-[11px]"></i>
+                                <span>Pending Candidates</span>
+                            </span>
+                            <span class="text-[10px] bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full font-bold">{{ $stats['pending'] }}</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Download XLS Dropdown -->
+                <div class="relative" x-data="{ open: false }">
+                    <button type="button" @click="open = !open" @click.outside="open = false" class="px-3.5 py-2 rounded-xl bg-slate-50 border border-slate-200 hover:border-emerald-400 hover:bg-emerald-50/50 text-slate-700 font-bold text-xs transition flex items-center gap-1.5 shadow-sm">
+                        <i class="fa-solid fa-file-excel text-emerald-600"></i>
+                        <span>Download XLS (A4)</span>
+                        <i class="fa-solid fa-chevron-down text-[10px] text-slate-400 transition" :class="{'rotate-180': open}"></i>
+                    </button>
+
+                    <div x-show="open" x-transition.origin.top.right class="absolute right-0 mt-2 w-64 bg-white rounded-2xl shadow-xl border border-slate-100 py-2 z-30" style="display: none;">
+                        <div class="px-3.5 py-1.5 border-b border-slate-100 text-[10px] font-extrabold uppercase tracking-wider text-slate-400">
+                            Print-Ready A4 XLS Registry
+                        </div>
+
+                        @if($search || ($jobId && $jobId !== 'all') || ($status && $status !== 'all') || $dateFilter)
+                            <a href="{{ route('admin.careers.applications.export.xls', array_merge(request()->query(), ['scope' => 'current'])) }}" class="flex items-center justify-between px-3.5 py-2 hover:bg-emerald-50 text-xs font-semibold text-slate-700 transition">
+                                <span class="flex items-center gap-2">
+                                    <i class="fa-solid fa-filter text-emerald-600 text-[11px]"></i>
+                                    <span>Current Filtered Registry</span>
+                                </span>
+                                <span class="text-[10px] bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full font-bold">{{ $applications->total() }}</span>
+                            </a>
+                        @endif
+
+                        <a href="{{ route('admin.careers.applications.export.xls', ['scope' => 'all']) }}" class="flex items-center justify-between px-3.5 py-2 hover:bg-slate-50 text-xs font-semibold text-slate-700 transition">
+                            <span class="flex items-center gap-2">
+                                <i class="fa-solid fa-table-list text-slate-500 text-[11px]"></i>
+                                <span>All Candidates List</span>
+                            </span>
+                            <span class="text-[10px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full font-bold">{{ $stats['total'] }}</span>
+                        </a>
+
+                        <a href="{{ route('admin.careers.applications.export.xls', ['scope' => 'shortlisted']) }}" class="flex items-center justify-between px-3.5 py-2 hover:bg-indigo-50 text-xs font-bold text-indigo-700 transition">
+                            <span class="flex items-center gap-2">
+                                <i class="fa-solid fa-star text-indigo-500 text-[11px]"></i>
+                                <span>Shortlisted Candidates</span>
+                            </span>
+                            <span class="text-[10px] bg-indigo-100 text-indigo-800 px-2 py-0.5 rounded-full font-extrabold">{{ $stats['shortlisted'] }}</span>
+                        </a>
+
+                        <a href="{{ route('admin.careers.applications.export.xls', ['scope' => 'interview_scheduled']) }}" class="flex items-center justify-between px-3.5 py-2 hover:bg-purple-50 text-xs font-semibold text-slate-700 transition">
+                            <span class="flex items-center gap-2">
+                                <i class="fa-solid fa-calendar-check text-purple-600 text-[11px]"></i>
+                                <span>Interview Scheduled</span>
+                            </span>
+                            <span class="text-[10px] bg-purple-100 text-purple-800 px-2 py-0.5 rounded-full font-bold">{{ $stats['interview_scheduled'] }}</span>
+                        </a>
+
+                        <a href="{{ route('admin.careers.applications.export.xls', ['scope' => 'selected']) }}" class="flex items-center justify-between px-3.5 py-2 hover:bg-emerald-50 text-xs font-semibold text-slate-700 transition">
+                            <span class="flex items-center gap-2">
+                                <i class="fa-solid fa-circle-check text-emerald-600 text-[11px]"></i>
+                                <span>Selected Candidates</span>
+                            </span>
+                            <span class="text-[10px] bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full font-bold">{{ $stats['selected'] }}</span>
+                        </a>
+
+                        <a href="{{ route('admin.careers.applications.export.xls', ['scope' => 'under_review']) }}" class="flex items-center justify-between px-3.5 py-2 hover:bg-blue-50 text-xs font-semibold text-slate-700 transition">
+                            <span class="flex items-center gap-2">
+                                <i class="fa-solid fa-magnifying-glass text-blue-500 text-[11px]"></i>
+                                <span>Under Review</span>
+                            </span>
+                            <span class="text-[10px] bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full font-bold">{{ $stats['under_review'] }}</span>
+                        </a>
+                    </div>
+                </div>
+
             </div>
 
         </form>
@@ -139,6 +277,26 @@
                 </select>
                 <button type="submit" onclick="return confirm('Apply status change to all selected applications?');" class="px-3.5 py-2 rounded-xl bg-white/20 hover:bg-white/30 text-white font-bold text-xs transition">
                     Apply Status
+                </button>
+            </form>
+
+            <!-- Download Selected CVs (ZIP) -->
+            <form action="{{ route('admin.careers.applications.export.cv-zip') }}" method="POST" id="bulk-cv-form" class="inline-block">
+                @csrf
+                <div id="bulk-cv-hidden-inputs"></div>
+                <button type="submit" class="px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs transition flex items-center gap-1.5 shadow-md">
+                    <i class="fa-solid fa-file-zipper"></i>
+                    <span>Download CVs (<span id="bulk-cv-count">0</span>)</span>
+                </button>
+            </form>
+
+            <!-- Download Selected XLS (A4) -->
+            <form action="{{ route('admin.careers.applications.export.xls') }}" method="POST" id="bulk-xls-form" class="inline-block">
+                @csrf
+                <div id="bulk-xls-hidden-inputs"></div>
+                <button type="submit" class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs transition flex items-center gap-1.5 shadow-md">
+                    <i class="fa-solid fa-file-excel"></i>
+                    <span>Download XLS (A4)</span>
                 </button>
             </form>
 
@@ -489,6 +647,9 @@ Adonis Chemical Industries Ltd.</textarea>
         const selectedCountLabel = document.getElementById('selected-count');
         const bulkStatusHidden = document.getElementById('bulk-status-hidden-inputs');
         const bulkDeleteHidden = document.getElementById('bulk-delete-hidden-inputs');
+        const bulkCvHidden = document.getElementById('bulk-cv-hidden-inputs');
+        const bulkXlsHidden = document.getElementById('bulk-xls-hidden-inputs');
+        const bulkCvCountLabel = document.getElementById('bulk-cv-count');
 
         function getSelectedApps() {
             const selected = [];
@@ -509,19 +670,26 @@ Adonis Chemical Industries Ltd.</textarea>
         function updateBulkBar() {
             const selected = getSelectedApps();
             selectedCountLabel.textContent = selected.length;
+            if (bulkCvCountLabel) {
+                bulkCvCountLabel.textContent = selected.length;
+            }
 
             if (selected.length > 0) {
                 bulkBar.classList.remove('hidden');
                 bulkBar.classList.add('flex');
 
-                // Populate hidden inputs
-                bulkStatusHidden.innerHTML = selected.map(s => `<input type="hidden" name="ids[]" value="${s.id}">`).join('');
-                bulkDeleteHidden.innerHTML = selected.map(s => `<input type="hidden" name="ids[]" value="${s.id}">`).join('');
+                const hiddenInputsHtml = selected.map(s => `<input type="hidden" name="ids[]" value="${s.id}">`).join('');
+                bulkStatusHidden.innerHTML = hiddenInputsHtml;
+                bulkDeleteHidden.innerHTML = hiddenInputsHtml;
+                if (bulkCvHidden) bulkCvHidden.innerHTML = hiddenInputsHtml;
+                if (bulkXlsHidden) bulkXlsHidden.innerHTML = hiddenInputsHtml;
             } else {
                 bulkBar.classList.remove('flex');
                 bulkBar.classList.add('hidden');
                 bulkStatusHidden.innerHTML = '';
                 bulkDeleteHidden.innerHTML = '';
+                if (bulkCvHidden) bulkCvHidden.innerHTML = '';
+                if (bulkXlsHidden) bulkXlsHidden.innerHTML = '';
             }
         }
 
